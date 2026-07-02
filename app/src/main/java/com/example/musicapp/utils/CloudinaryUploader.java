@@ -7,6 +7,7 @@ import android.os.Looper;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -99,7 +100,7 @@ public class CloudinaryUploader {
                         return;
                     }
 
-                    byte[] fileBytes = inputStream.readAllBytes();
+                    byte[] fileBytes = readInputStream(inputStream);
                     inputStream.close();
 
                     RequestBody fileBody = RequestBody.create(fileBytes, MediaType.parse(mimeType));
@@ -173,5 +174,20 @@ public class CloudinaryUploader {
                 }
             }
         }).start();
+    }
+
+    /**
+     * Đọc InputStream thành byte[] tương thích với minSdk 23 (Android 6.0+).
+     * Thay thế cho inputStream.readAllBytes() chỉ có từ API 26.
+     */
+    private byte[] readInputStream(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int bytesRead;
+        byte[] data = new byte[16384];
+        while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, bytesRead);
+        }
+        buffer.flush();
+        return buffer.toByteArray();
     }
 }
