@@ -149,15 +149,24 @@ public class CloudinaryUploader {
                                     });
                                 }
                             } else {
-                                String errorBody = "";
+                                String errorDetail = "HTTP " + response.code();
                                 try {
-                                    errorBody = response.body().string();
+                                    String errorBody = response.body().string();
+                                    // Trích xuất message lỗi từ JSON Cloudinary
+                                    // VD: {"error":{"message":"Upload preset not found"}}
+                                    org.json.JSONObject errJson = new org.json.JSONObject(errorBody);
+                                    if (errJson.has("error")) {
+                                        org.json.JSONObject errObj = errJson.getJSONObject("error");
+                                        errorDetail = errObj.optString("message", errorBody);
+                                    } else {
+                                        errorDetail = errorBody;
+                                    }
                                 } catch (Exception ignored) {}
-                                final String finalErrorBody = errorBody;
+                                final String finalErrorDetail = errorDetail;
                                 mainHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        callback.onError("Upload thất bại (HTTP " + response.code() + "): " + finalErrorBody);
+                                        callback.onError("Cloudinary lỗi: " + finalErrorDetail);
                                     }
                                 });
                             }

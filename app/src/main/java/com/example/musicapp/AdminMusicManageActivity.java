@@ -129,9 +129,11 @@ public class AdminMusicManageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(AdminMusicManageActivity.this,
-                        "Lỗi tải danh sách nhạc: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (firebaseHelper.getCurrentUser() != null) {
+                    Toast.makeText(AdminMusicManageActivity.this,
+                            "Lỗi tải danh sách nhạc: " + error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

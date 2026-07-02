@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.example.musicapp.models.FavoriteModel;
 import com.example.musicapp.models.MusicModel;
 import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -31,7 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Locale;
 
 /**
@@ -44,12 +49,13 @@ public class MusicListActivity extends AppCompatActivity {
     EditText edtSearch;
     ProgressBar progressBar;
     TextView tvEmpty;
-    ImageButton btnFavorite;
-    ImageButton btnProfile;
+    Spinner spinnerCategory;
+    BottomNavigationView bottomNav;
 
     MusicAdapter musicAdapter;
     List<MusicModel> musicList;
     List<String> favoriteIds;
+    String currentCategory = "Tất cả";
 
     FirebaseHelper firebaseHelper;
     SessionManager sessionManager;
@@ -72,8 +78,8 @@ public class MusicListActivity extends AppCompatActivity {
         edtSearch = findViewById(R.id.edtSearch);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
-        btnFavorite = findViewById(R.id.btnFavorite);
-        btnProfile = findViewById(R.id.btnProfile);
+        spinnerCategory = findViewById(R.id.spinnerCategory);
+        bottomNav = findViewById(R.id.bottomNav);
 
         musicList = new ArrayList<>();
         favoriteIds = new ArrayList<>();
@@ -110,27 +116,44 @@ public class MusicListActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                musicAdapter.filter(s.toString());
+                musicAdapter.filter(s.toString(), currentCategory);
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        btnFavorite.setOnClickListener(new View.OnClickListener() {
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MusicListActivity.this, FavoriteMusicActivity.class);
-                startActivity(intent);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentCategory = parent.getItemAtPosition(position).toString();
+                musicAdapter.filter(edtSearch.getText().toString(), currentCategory);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
             }
         });
 
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MusicListActivity.this, ProfileActivity.class);
-                startActivity(intent);
+        // Setup Bottom Navigation
+        bottomNav.setSelectedItemId(R.id.nav_home);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                return true;
+            } else if (id == R.id.nav_favorites) {
+                startActivity(new Intent(MusicListActivity.this, FavoriteMusicActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(MusicListActivity.this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
             }
+            return false;
         });
 
         loadFavorites();
@@ -145,10 +168,14 @@ public class MusicListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 musicList.clear();
+                Set<String> categories = new HashSet<>();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     MusicModel music = ds.getValue(MusicModel.class);
                     if (music != null) {
                         musicList.add(music);
+                        if (music.getCategory() != null && !music.getCategory().isEmpty()) {
+                            categories.add(music.getCategory());
+                        }
                     }
                 }
                 progressBar.setVisibility(View.GONE);
@@ -161,16 +188,38 @@ public class MusicListActivity extends AppCompatActivity {
 
                 musicAdapter.setFullList(musicList);
                 musicAdapter.setFavoriteIds(favoriteIds);
+                
+                setupCategoryChips(categories);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(MusicListActivity.this,
-                        "Lỗi tải danh sách nhạc: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (sessionManager.getUid() != null && !sessionManager.getUid().isEmpty()) {
+                    Toast.makeText(MusicListActivity.this,
+                            "Lỗi tải danh sách nhạc: " + error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void setupCategoryChips(Set<String> categories) {
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("Tất cả");
+        categoryList.addAll(categories);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, categoryList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(adapter);
+
+        // Giữ lại lựa chọn hiện tại nếu có
+        if (currentCategory != null && categoryList.contains(currentCategory)) {
+            spinnerCategory.setSelection(categoryList.indexOf(currentCategory));
+        } else {
+            spinnerCategory.setSelection(0);
+        }
     }
 
     private void loadFavorites() {
@@ -189,9 +238,11 @@ public class MusicListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(MusicListActivity.this,
-                        "Lỗi tải yêu thích: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (sessionManager.getUid() != null && !sessionManager.getUid().isEmpty()) {
+                    Toast.makeText(MusicListActivity.this,
+                            "Lỗi tải yêu thích: " + error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -13,10 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.bumptech.glide.Glide;
 import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * ProfileActivity - Màn hình hồ sơ người dùng.
@@ -29,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tvEmail;
     TextView tvRole;
     Button btnLogout;
+    BottomNavigationView bottomNav;
 
     FirebaseHelper firebaseHelper;
     SessionManager sessionManager;
@@ -52,14 +56,35 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvEmail);
         tvRole = findViewById(R.id.tvRole);
         btnLogout = findViewById(R.id.btnLogout);
+        bottomNav = findViewById(R.id.bottomNav);
 
         loadUserInfo();
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleLogout();
+                showLogoutConfirmDialog();
             }
+        });
+
+        // Setup Bottom Navigation
+        bottomNav.setSelectedItemId(R.id.nav_profile);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_profile) {
+                return true;
+            } else if (id == R.id.nav_home) {
+                startActivity(new Intent(ProfileActivity.this, MusicListActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            } else if (id == R.id.nav_favorites) {
+                startActivity(new Intent(ProfileActivity.this, FavoriteMusicActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -76,13 +101,27 @@ public class ProfileActivity extends AppCompatActivity {
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(this)
                     .load(avatarUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
                     .circleCrop()
                     .into(ivAvatar);
         } else {
-            ivAvatar.setImageResource(R.drawable.ic_launcher_foreground);
+            ivAvatar.setImageResource(R.drawable.ic_person);
         }
+    }
+
+    private void showLogoutConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?")
+                .setPositiveButton("Đăng xuất", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handleLogout();
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void handleLogout() {

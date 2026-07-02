@@ -60,22 +60,24 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         notifyDataSetChanged();
     }
 
-    public void filter(String query) {
+    private String currentQuery = "";
+    private String currentCategory = "Tất cả";
+
+    public void filter(String query, String category) {
+        this.currentQuery = query != null ? query.trim().toLowerCase() : "";
+        this.currentCategory = category != null ? category : "Tất cả";
+
         musicList = new ArrayList<>();
-        if (query == null || query.trim().isEmpty()) {
-            musicList.addAll(musicListFull);
-        } else {
-            String lowerQuery = query.toLowerCase().trim();
-            for (MusicModel music : musicListFull) {
-                boolean matchTitle = music.getTitle() != null &&
-                        music.getTitle().toLowerCase().contains(lowerQuery);
-                boolean matchArtist = music.getArtist() != null &&
-                        music.getArtist().toLowerCase().contains(lowerQuery);
-                boolean matchCategory = music.getCategory() != null &&
-                        music.getCategory().toLowerCase().contains(lowerQuery);
-                if (matchTitle || matchArtist || matchCategory) {
-                    musicList.add(music);
-                }
+        for (MusicModel music : musicListFull) {
+            boolean matchQuery = currentQuery.isEmpty() ||
+                    (music.getTitle() != null && music.getTitle().toLowerCase().contains(currentQuery)) ||
+                    (music.getArtist() != null && music.getArtist().toLowerCase().contains(currentQuery));
+
+            boolean matchCategory = currentCategory.equals("Tất cả") ||
+                    (music.getCategory() != null && music.getCategory().equalsIgnoreCase(currentCategory));
+
+            if (matchQuery && matchCategory) {
+                musicList.add(music);
             }
         }
         notifyDataSetChanged();

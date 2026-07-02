@@ -70,6 +70,23 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
     }
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
+    private void showLogoutConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất khỏi trang Quản trị?")
+                .setPositiveButton("Đăng xuất", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handleLogout();
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
     private void handleLogout() {
         firebaseHelper.signOut();
         sessionManager.clearSession();

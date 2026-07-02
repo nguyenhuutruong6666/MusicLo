@@ -14,11 +14,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.example.musicapp.adapters.FavoriteMusicAdapter;
 import com.example.musicapp.models.MusicModel;
 import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -35,6 +38,7 @@ public class FavoriteMusicActivity extends AppCompatActivity {
     RecyclerView rvFavoriteList;
     ProgressBar progressBar;
     TextView tvEmpty;
+    BottomNavigationView bottomNav;
 
     FavoriteMusicAdapter favoriteMusicAdapter;
     List<MusicModel> favoriteList;
@@ -59,6 +63,7 @@ public class FavoriteMusicActivity extends AppCompatActivity {
         rvFavoriteList = findViewById(R.id.rvFavoriteList);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
+        bottomNav = findViewById(R.id.bottomNav);
 
         favoriteList = new ArrayList<>();
 
@@ -84,8 +89,38 @@ public class FavoriteMusicActivity extends AppCompatActivity {
         favoriteMusicAdapter.setOnRemoveFavoriteListener(new FavoriteMusicAdapter.OnRemoveFavoriteListener() {
             @Override
             public void onRemoveFavorite(MusicModel music) {
-                removeFavorite(music);
+                new AlertDialog.Builder(FavoriteMusicActivity.this)
+                        .setTitle("Xác nhận bỏ yêu thích")
+                        .setMessage("Bạn có chắc chắn muốn bỏ bài hát này khỏi danh sách yêu thích?")
+                        .setPositiveButton("Bỏ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeFavorite(music);
+                            }
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
             }
+        });
+
+        // Setup Bottom Navigation
+        bottomNav.setSelectedItemId(R.id.nav_favorites);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_favorites) {
+                return true;
+            } else if (id == R.id.nav_home) {
+                startActivity(new Intent(FavoriteMusicActivity.this, MusicListActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(FavoriteMusicActivity.this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            }
+            return false;
         });
 
         loadFavorites();
@@ -156,9 +191,11 @@ public class FavoriteMusicActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(FavoriteMusicActivity.this,
-                        "Lỗi tải yêu thích: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (sessionManager.getUid() != null && !sessionManager.getUid().isEmpty()) {
+                    Toast.makeText(FavoriteMusicActivity.this,
+                            "Lỗi tải yêu thích: " + error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

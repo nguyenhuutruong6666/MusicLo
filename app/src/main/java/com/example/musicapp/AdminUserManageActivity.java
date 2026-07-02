@@ -112,9 +112,11 @@ public class AdminUserManageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(AdminUserManageActivity.this,
-                        "Lỗi tải danh sách user: " + error.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (firebaseHelper.getCurrentUser() != null) {
+                    Toast.makeText(AdminUserManageActivity.this,
+                            "Lỗi tải danh sách user: " + error.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
