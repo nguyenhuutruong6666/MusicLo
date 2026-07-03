@@ -47,7 +47,7 @@
             android:layout_height="64dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary_purple"
-            android:text="🎵  Quản lý nhạc"
+            android:text="Quản lý nhạc"
             android:textColor="@color/text_on_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -58,7 +58,7 @@
             android:layout_height="64dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary_blue"
-            android:text="👤  Quản lý người dùng"
+            android:text="Quản lý người dùng"
             android:textColor="@color/text_on_primary"
             android:textSize="18sp"
             android:textStyle="bold" />

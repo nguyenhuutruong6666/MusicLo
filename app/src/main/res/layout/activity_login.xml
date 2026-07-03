@@ -18,7 +18,7 @@
             android:id="@+id/tvAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🎵 MusicApp"
+            android:text="MusicApp"
             android:textColor="@color/primary_purple"
             android:textSize="36sp"
             android:textStyle="bold"
