@@ -16,11 +16,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * MainActivity - Màn hình khởi động.
- * Kiểm tra trạng thái đăng nhập và role của người dùng,
- * sau đó điều hướng đến màn hình phù hợp.
- */
 public class MainActivity extends AppCompatActivity {
 
     FirebaseHelper firebaseHelper;

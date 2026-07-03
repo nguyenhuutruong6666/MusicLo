@@ -16,7 +16,6 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <!-- User Avatar Icon -->
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -24,7 +23,6 @@
             android:src="@drawable/ic_person"
             android:tint="@color/text_secondary" />
 
-        <!-- User Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,8 +64,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
-
-        <!-- Action Buttons -->
+        
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

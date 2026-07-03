@@ -3,10 +3,6 @@ package com.example.musicapp.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * SessionManager - Quản lý phiên đăng nhập của người dùng.
- * Lưu trữ thông tin role và uid sau khi đọc từ Firebase để tránh đọc lại nhiều lần.
- */
 public class SessionManager {
 
     private static final String PREF_NAME = "MusicAppSession";

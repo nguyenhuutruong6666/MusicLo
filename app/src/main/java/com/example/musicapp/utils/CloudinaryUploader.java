@@ -20,19 +20,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-/**
- * CloudinaryUploader - Upload file lên Cloudinary sử dụng Unsigned Upload Preset.
- *
- * LƯU Ý: Bạn cần tạo một Unsigned Upload Preset trên Cloudinary:
- * 1. Đăng nhập vào https://cloudinary.com/
- * 2. Vào Settings > Upload > Upload presets
- * 3. Bấm "Add upload preset"
- * 4. Đặt tên là "music_unsigned_preset"
- * 5. Signing mode: Unsigned
- * 6. Lưu lại
- *
- * KHÔNG hardcode API Secret trong ứng dụng Android.
- */
 public class CloudinaryUploader {
 
     // Cloud name của bạn

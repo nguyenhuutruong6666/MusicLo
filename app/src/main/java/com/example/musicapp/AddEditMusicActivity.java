@@ -39,10 +39,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * AddEditMusicActivity - Trang thêm hoặc sửa thông tin bài hát.
- * Hỗ trợ upload ảnh và mp3 lên Cloudinary, sau đó lưu vào Firebase.
- */
 public class AddEditMusicActivity extends AppCompatActivity {
 
     ImageView ivCoverPreview;

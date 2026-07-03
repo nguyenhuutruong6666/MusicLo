@@ -17,10 +17,6 @@ import android.content.DialogInterface;
 import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
 
-/**
- * AdminDashboardActivity - Trang chính của Admin.
- * Cung cấp các nút điều hướng đến quản lý nhạc, quản lý user và đăng xuất.
- */
 public class AdminDashboardActivity extends AppCompatActivity {
 
     Button btnManageMusic;

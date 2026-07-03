@@ -21,10 +21,6 @@ import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-/**
- * ProfileActivity - Màn hình hồ sơ người dùng.
- * Hiển thị thông tin cá nhân và nút đăng xuất.
- */
 public class ProfileActivity extends AppCompatActivity {
 
     ImageView ivAvatar;

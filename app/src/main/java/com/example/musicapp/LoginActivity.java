@@ -23,10 +23,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * LoginActivity - Màn hình đăng nhập.
- * Đăng nhập bằng email / password, kiểm tra role và điều hướng tương ứng.
- */
 public class LoginActivity extends AppCompatActivity {
 
     EditText edtEmail;

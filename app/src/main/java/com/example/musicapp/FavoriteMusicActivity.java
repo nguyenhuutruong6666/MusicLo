@@ -29,10 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * FavoriteMusicActivity - Màn hình danh sách nhạc yêu thích.
- * Lấy danh sách musicId từ favorites/{uid}, sau đó đọc thông tin từ songs.
- */
 public class FavoriteMusicActivity extends AppCompatActivity {
 
     RecyclerView rvFavoriteList;

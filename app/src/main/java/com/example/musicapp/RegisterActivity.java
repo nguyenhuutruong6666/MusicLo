@@ -23,10 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * RegisterActivity - Màn hình đăng ký tài khoản.
- * Tạo tài khoản Firebase Auth và lưu thông tin vào Realtime Database.
- */
 public class RegisterActivity extends AppCompatActivity {
 
     EditText edtFullName;

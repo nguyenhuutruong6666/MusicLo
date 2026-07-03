@@ -62,7 +62,6 @@
 
         </LinearLayout>
 
-        <!-- Remove Favorite Button -->
         <ImageButton
             android:id="@+id/btnRemoveFavorite"
             android:layout_width="40dp"

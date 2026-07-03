@@ -31,10 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * MusicPlayerActivity - Màn hình phát nhạc.
- * Nhận dữ liệu bài hát qua Intent và phát file mp3 bằng MediaPlayer.
- */
 public class MusicPlayerActivity extends AppCompatActivity {
 
     ImageView ivCover;

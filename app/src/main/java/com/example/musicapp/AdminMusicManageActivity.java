@@ -29,10 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AdminMusicManageActivity - Trang quản lý nhạc dành cho Admin.
- * Hiển thị danh sách nhạc, có nút thêm, sửa, xóa.
- */
 public class AdminMusicManageActivity extends AppCompatActivity {
 
     RecyclerView rvMusicList;

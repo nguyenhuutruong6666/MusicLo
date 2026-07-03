@@ -27,15 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AdminUserManageActivity - Trang quản lý người dùng dành cho Admin.
- *
- * LƯU Ý QUAN TRỌNG:
- * Chức năng xóa ở đây chỉ xóa dữ liệu user khỏi Realtime Database.
- * Để xóa tài khoản Firebase Authentication, bắt buộc phải dùng
- * Firebase Admin SDK (backend) hoặc Cloud Functions.
- * Không thể xóa tài khoản Auth của user khác từ phía client.
- */
 public class AdminUserManageActivity extends AppCompatActivity {
 
     RecyclerView rvUserList;

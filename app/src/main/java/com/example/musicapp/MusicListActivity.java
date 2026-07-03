@@ -41,10 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Locale;
 
-/**
- * MusicListActivity - Màn hình danh sách nhạc.
- * Hiển thị toàn bộ danh sách nhạc từ Firebase, có tìm kiếm và nút yêu thích.
- */
 public class MusicListActivity extends AppCompatActivity {
 
     RecyclerView rvMusicList;
