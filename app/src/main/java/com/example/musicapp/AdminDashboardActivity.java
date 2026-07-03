@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.example.musicapp.utils.FirebaseHelper;
 import com.example.musicapp.utils.SessionManager;
@@ -65,13 +67,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleLogout();
+                showLogoutConfirmDialog();
             }
         });
     }
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 
     private void showLogoutConfirmDialog() {
         new AlertDialog.Builder(this)

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,6 +24,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.bumptech.glide.Glide;
 import com.example.musicapp.models.MusicModel;
@@ -43,6 +46,7 @@ import java.util.Map;
 public class AddEditMusicActivity extends AppCompatActivity {
 
     ImageView ivCoverPreview;
+    ImageButton btnBack;
     Button btnSelectImage;
     Button btnSelectMp3;
     TextView tvMp3FileName;
@@ -87,6 +91,7 @@ public class AddEditMusicActivity extends AppCompatActivity {
         cloudinaryUploader = new CloudinaryUploader();
 
         ivCoverPreview = findViewById(R.id.ivCoverPreview);
+        btnBack = findViewById(R.id.btnBack);
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnSelectMp3 = findViewById(R.id.btnSelectMp3);
         tvMp3FileName = findViewById(R.id.tvMp3FileName);
@@ -183,6 +188,13 @@ public class AddEditMusicActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         btnSelectMp3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,9 +205,23 @@ public class AddEditMusicActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleSave();
+                showSaveConfirmDialog();
             }
         });
+    }
+
+    private void showSaveConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận lưu")
+                .setMessage("Bạn có chắc chắn muốn lưu thông tin bài hát này không?")
+                .setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handleSave();
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void checkPermissionAndPickImage() {

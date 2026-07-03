@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class AdminMusicManageActivity extends AppCompatActivity {
 
     RecyclerView rvMusicList;
     Button btnAddMusic;
+    ImageButton btnBack;
     ProgressBar progressBar;
     TextView tvEmpty;
 
@@ -59,6 +61,7 @@ public class AdminMusicManageActivity extends AppCompatActivity {
 
         rvMusicList = findViewById(R.id.rvMusicList);
         btnAddMusic = findViewById(R.id.btnAddMusic);
+        btnBack = findViewById(R.id.btnBack);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
 
@@ -97,6 +100,13 @@ public class AdminMusicManageActivity extends AppCompatActivity {
                 Intent intent = new Intent(AdminMusicManageActivity.this, AddEditMusicActivity.class);
                 intent.putExtra("mode", "add");
                 startActivity(intent);
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import java.util.List;
 public class AdminUserManageActivity extends AppCompatActivity {
 
     RecyclerView rvUserList;
+    ImageButton btnBack;
     ProgressBar progressBar;
     TextView tvEmpty;
 
@@ -60,6 +62,7 @@ public class AdminUserManageActivity extends AppCompatActivity {
         firebaseHelper = FirebaseHelper.getInstance();
 
         rvUserList = findViewById(R.id.rvUserList);
+        btnBack = findViewById(R.id.btnBack);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
 
@@ -80,6 +83,13 @@ public class AdminUserManageActivity extends AppCompatActivity {
             @Override
             public void onDeleteUser(UserModel user) {
                 showDeleteUserConfirmDialog(user);
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
