@@ -23,6 +23,11 @@ public class AdminMusicAdapter extends RecyclerView.Adapter<AdminMusicAdapter.Ad
     private final List<MusicModel> musicList;
     private OnEditClickListener onEditClickListener;
     private OnDeleteClickListener onDeleteClickListener;
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(MusicModel music);
+    }
 
     public interface OnEditClickListener {
         void onEditClick(MusicModel music);
@@ -43,6 +48,10 @@ public class AdminMusicAdapter extends RecyclerView.Adapter<AdminMusicAdapter.Ad
 
     public void setOnDeleteClickListener(OnDeleteClickListener listener) {
         this.onDeleteClickListener = listener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -85,6 +94,15 @@ public class AdminMusicAdapter extends RecyclerView.Adapter<AdminMusicAdapter.Ad
             public void onClick(View v) {
                 if (onDeleteClickListener != null) {
                     onDeleteClickListener.onDeleteClick(music);
+                }
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(music);
                 }
             }
         });

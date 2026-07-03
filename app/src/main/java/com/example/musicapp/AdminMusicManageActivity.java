@@ -65,6 +65,20 @@ public class AdminMusicManageActivity extends AppCompatActivity {
 
         adminMusicAdapter = new AdminMusicAdapter(this, musicList);
         rvMusicList.setLayoutManager(new LinearLayoutManager(this));
+        adminMusicAdapter.setOnItemClickListener(new AdminMusicAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MusicModel music) {
+                Intent intent = new Intent(AdminMusicManageActivity.this, MusicPlayerActivity.class);
+                intent.putExtra("musicId", music.getMusicId());
+                intent.putExtra("title", music.getTitle());
+                intent.putExtra("artist", music.getArtist());
+                intent.putExtra("imageUrl", music.getImageUrl());
+                intent.putExtra("mp3Url", music.getMp3Url());
+                intent.putExtra("category", music.getCategory());
+                startActivity(intent);
+            }
+        });
+
         rvMusicList.setAdapter(adminMusicAdapter);
 
         adminMusicAdapter.setOnEditClickListener(new AdminMusicAdapter.OnEditClickListener() {
