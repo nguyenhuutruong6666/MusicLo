@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.musicapp.adapters.MusicAdapter;
 import com.example.musicapp.models.FavoriteModel;
 import com.example.musicapp.models.MusicModel;
@@ -49,6 +51,8 @@ public class MusicListActivity extends AppCompatActivity {
     EditText edtSearch;
     ProgressBar progressBar;
     TextView tvEmpty;
+    TextView tvGreeting;
+    ImageView ivUserAvatar;
     Spinner spinnerCategory;
     BottomNavigationView bottomNav;
 
@@ -78,6 +82,8 @@ public class MusicListActivity extends AppCompatActivity {
         edtSearch = findViewById(R.id.edtSearch);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
+        tvGreeting = findViewById(R.id.tvGreeting);
+        ivUserAvatar = findViewById(R.id.ivUserAvatar);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         bottomNav = findViewById(R.id.bottomNav);
 
@@ -156,8 +162,31 @@ public class MusicListActivity extends AppCompatActivity {
             return false;
         });
 
+        loadUserInfo();
         loadFavorites();
         loadMusicList();
+    }
+
+    private void loadUserInfo() {
+        String fullName = sessionManager.getFullName();
+        String avatarUrl = sessionManager.getAvatarUrl();
+
+        if (fullName != null && !fullName.isEmpty()) {
+            tvGreeting.setText(fullName + " 👋");
+        } else {
+            tvGreeting.setText("Bạn ơi 👋");
+        }
+
+        if (avatarUrl != null && !avatarUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .circleCrop()
+                    .into(ivUserAvatar);
+        } else {
+            ivUserAvatar.setImageResource(R.drawable.ic_person);
+        }
     }
 
     private void loadMusicList() {

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -116,9 +117,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         }
 
         boolean isFavorite = favoriteIds.contains(music.getMusicId());
-        holder.btnFavorite.setImageResource(
-                isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
-        );
+        if (isFavorite) {
+            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_filled);
+            holder.btnFavorite.setColorFilter(ContextCompat.getColor(context, R.color.primary_purple));
+        } else {
+            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_border);
+            holder.btnFavorite.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
