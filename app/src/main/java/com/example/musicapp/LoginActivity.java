@@ -105,9 +105,28 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         btnLogin.setEnabled(true);
-                        String errorMsg = task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Đăng nhập thất bại";
+                        Exception exception = task.getException();
+                        String errorMsg = "Đăng nhập thất bại";
+
+                        if (exception instanceof com.google.firebase.auth.FirebaseAuthInvalidUserException) {
+                            errorMsg = "Tài khoản không tồn tại hoặc đã bị xóa.";
+                        } else if (exception instanceof com.google.firebase.auth.FirebaseAuthInvalidCredentialsException) {
+                            errorMsg = "Sai email hoặc mật khẩu. Vui lòng kiểm tra lại.";
+                        } else if (exception != null) {
+                            String msg = exception.getMessage();
+                            if (msg != null) {
+                                if (msg.contains("badly formatted")) {
+                                    errorMsg = "Định dạng email không hợp lệ.";
+                                } else if (msg.contains("network error")) {
+                                    errorMsg = "Lỗi mạng. Vui lòng kiểm tra kết nối internet.";
+                                } else if (msg.contains("blocked") || msg.contains("disabled")) {
+                                    errorMsg = "Tài khoản này đã bị khóa.";
+                                } else {
+                                    errorMsg = "Lỗi đăng nhập: " + msg;
+                                }
+                            }
+                        }
+                        
                         Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                     }
                 });

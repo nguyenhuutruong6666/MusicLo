@@ -120,9 +120,24 @@ public class RegisterActivity extends AppCompatActivity {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         btnRegister.setEnabled(true);
-                        String errorMsg = task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Đăng ký thất bại";
+                        Exception exception = task.getException();
+                        String errorMsg = "Đăng ký thất bại";
+
+                        if (exception instanceof com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                            errorMsg = "Email này đã được sử dụng. Vui lòng chọn email khác.";
+                        } else if (exception != null) {
+                            String msg = exception.getMessage();
+                            if (msg != null) {
+                                if (msg.contains("badly formatted")) {
+                                    errorMsg = "Định dạng email không hợp lệ.";
+                                } else if (msg.contains("network error")) {
+                                    errorMsg = "Lỗi mạng. Vui lòng kiểm tra kết nối internet.";
+                                } else {
+                                    errorMsg = "Lỗi đăng ký: " + msg;
+                                }
+                            }
+                        }
+                        
                         Toast.makeText(RegisterActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                     }
                 });
