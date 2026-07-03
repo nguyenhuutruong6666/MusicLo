@@ -58,7 +58,6 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
 
         holder.tvTitle.setText(music.getTitle() != null ? music.getTitle() : "");
         holder.tvArtist.setText(music.getArtist() != null ? music.getArtist() : "");
-        holder.tvCategory.setText(music.getCategory() != null ? music.getCategory() : "");
 
         if (music.getImageUrl() != null && !music.getImageUrl().isEmpty()) {
             Glide.with(context)
@@ -99,7 +98,6 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
         ImageView ivCover;
         TextView tvTitle;
         TextView tvArtist;
-        TextView tvCategory;
         ImageButton btnRemoveFavorite;
 
         public FavoriteViewHolder(@NonNull View itemView) {
@@ -107,7 +105,6 @@ public class FavoriteMusicAdapter extends RecyclerView.Adapter<FavoriteMusicAdap
             ivCover = itemView.findViewById(R.id.ivCover);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvArtist = itemView.findViewById(R.id.tvArtist);
-            tvCategory = itemView.findViewById(R.id.tvCategory);
             btnRemoveFavorite = itemView.findViewById(R.id.btnRemoveFavorite);
         }
     }
