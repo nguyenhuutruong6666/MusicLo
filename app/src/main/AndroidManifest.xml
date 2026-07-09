@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -15,11 +14,10 @@
         android:label="Music Lỏ"
         android:roundIcon="@drawable/avtapp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Musicapp"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.Musicapp">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".TrangChuActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,46 +26,52 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".DangNhapActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".DangKyActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
-            android:name=".MusicListActivity"
+            android:name=".DanhSachBaiHatActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
 
         <activity
-            android:name=".MusicPlayerActivity"
+            android:name=".PhatNhacActivity"
             android:exported="false" />
 
         <activity
-            android:name=".FavoriteMusicActivity"
+            android:name=".DanhSachYeuThichActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
 
         <activity
-            android:name=".ProfileActivity"
+            android:name=".TrangCaNhanActivity"
             android:exported="false" />
 
         <activity
-            android:name=".AdminDashboardActivity"
+            android:name=".TrangQuanTriActivity"
             android:exported="false" />
 
         <activity
-            android:name=".AdminMusicManageActivity"
+            android:name=".QuanLyBaiHatActivity"
             android:exported="false" />
 
         <activity
-            android:name=".AddEditMusicActivity"
+            android:name=".ThemSuaBaiHatActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
-            android:name=".AdminUserManageActivity"
+            android:name=".QuanLyNguoiDungActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GuiPhanHoiActivity"
             android:exported="false" />
 
     </application>
