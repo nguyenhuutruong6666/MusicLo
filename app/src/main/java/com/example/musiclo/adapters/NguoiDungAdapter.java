@@ -1,143 +1,150 @@
 package com.example.musiclo.adapters;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
 
+import com.example.musiclo.QuanLyNguoiDungActivity;
 import com.example.musiclo.R;
 import com.example.musiclo.models.NguoiDung;
+import com.example.musiclo.utils.CSDLHelper;
+import com.example.musiclo.utils.QuanLyPhienDangNhap;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class NguoiDungAdapter extends RecyclerView.Adapter<NguoiDungAdapter.HolderNguoiDung> {
+public class NguoiDungAdapter extends ArrayAdapter<NguoiDung> {
+    Activity context;
+    int resource;
+    ArrayList<NguoiDung> listNguoiDung;
+    CSDLHelper csdlHelper;
+    QuanLyPhienDangNhap quanLyPhienDangNhap;
 
-    // Các biến lưu trữ dữ liệu
-    private Context context;
-    private List<NguoiDung> danhSachNguoiDung;
-    
-    // Các biến xử lý sự kiện
-    private SuKienDoiVaiTro suKienDoiVaiTro;
-    private SuKienXoaNguoiDung suKienXoaNguoiDung;
-
-    // Khai báo giao diện (Interface) để gửi sự kiện ra ngoài
-    public interface SuKienDoiVaiTro { 
-        void khiDoiVaiTro(NguoiDung nguoiDung, String vaiTroMoi); 
-    }
-    public interface SuKienXoaNguoiDung { 
-        void khiXoaNguoiDung(NguoiDung nguoiDung); 
-    }
-
-    // Hàm khởi tạo (Constructor)
-    public NguoiDungAdapter(Context context, List<NguoiDung> danhSachNguoiDung) {
+    public NguoiDungAdapter(Activity context, int resource, ArrayList<NguoiDung> listNguoiDung) {
+        super(context, resource, listNguoiDung);
         this.context = context;
-        this.danhSachNguoiDung = danhSachNguoiDung;
+        this.resource = resource;
+        this.listNguoiDung = listNguoiDung;
+        this.csdlHelper = CSDLHelper.layThucThe(context);
+        this.quanLyPhienDangNhap = new QuanLyPhienDangNhap(context);
     }
 
-    // Các hàm để gán sự kiện từ Activity vào Adapter
-    public void datSuKienDoiVaiTro(SuKienDoiVaiTro suKien) { 
-        this.suKienDoiVaiTro = suKien; 
-    }
-    public void datSuKienXoaNguoiDung(SuKienXoaNguoiDung suKien) { 
-        this.suKienXoaNguoiDung = suKien; 
-    }
-
-    // Khởi tạo một View mới (giao diện cho 1 item người dùng)
-    @NonNull 
     @Override
-    public HolderNguoiDung onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_nguoi_dung, parent, false);
-        return new HolderNguoiDung(view);
+    public int getCount() {
+        return this.listNguoiDung.size();
     }
 
-    // Đưa dữ liệu của người dùng vào trong giao diện
+    @NonNull
     @Override
-    public void onBindViewHolder(@NonNull HolderNguoiDung holder, int position) {
-        NguoiDung nguoiDung = danhSachNguoiDung.get(position);
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View customView = layoutInflater.inflate(resource, null);
 
-        // Hiển thị email (Nếu null thì để chuỗi rỗng)
+        TextView tvHoTen = customView.findViewById(R.id.tvHoTen);
+        TextView tvEmail = customView.findViewById(R.id.tvEmail);
+        TextView tvVaiTro = customView.findViewById(R.id.tvVaiTro);
+        Button btnDoiVaiTro = customView.findViewById(R.id.btnDoiVaiTro);
+        Button btnXoa = customView.findViewById(R.id.btnXoa);
+
+        NguoiDung nguoiDung = listNguoiDung.get(position);
+        
         if (nguoiDung.getEmail() != null) {
-            holder.tvEmail.setText(nguoiDung.getEmail());
+            tvEmail.setText(nguoiDung.getEmail());
         } else {
-            holder.tvEmail.setText("");
+            tvEmail.setText("");
         }
 
-        // Hiển thị họ tên (Nếu null hoặc rỗng thì ghi "Chưa cập nhật")
         String hoTen = nguoiDung.getHoTen();
         if (hoTen != null && !hoTen.isEmpty()) {
-            holder.tvHoTen.setText(hoTen);
+            tvHoTen.setText(hoTen);
         } else {
-            holder.tvHoTen.setText("Chưa cập nhật");
+            tvHoTen.setText("Chưa cập nhật");
         }
-        
-        // Lấy vai trò hiện tại
+
         String vaiTroHienTai = nguoiDung.getVaiTro();
-
-        // Hiển thị vai trò và nút đổi vai trò tương ứng
         if ("admin".equals(vaiTroHienTai)) {
-            holder.tvVaiTro.setText("Vai trò: Admin");
-            holder.btnDoiVaiTro.setText("Đổi thành User");
+            tvVaiTro.setText("Vai trò: Admin");
+            btnDoiVaiTro.setText("Đổi thành User");
         } else {
-            holder.tvVaiTro.setText("Vai trò: Người dùng");
-            holder.btnDoiVaiTro.setText("Đổi thành Admin");
+            tvVaiTro.setText("Vai trò: Người dùng");
+            btnDoiVaiTro.setText("Đổi thành Admin");
         }
 
-        // Bắt sự kiện khi nhấn nút Đổi Vai Trò
-        holder.btnDoiVaiTro.setOnClickListener(new View.OnClickListener() {
+        btnDoiVaiTro.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (suKienDoiVaiTro != null) {
-                    // Xác định vai trò mới để truyền ra ngoài
-                    String vaiTroMoi;
-                    if ("admin".equals(nguoiDung.getVaiTro())) {
-                        vaiTroMoi = "user";
-                    } else {
-                        vaiTroMoi = "admin";
+            public void onClick(View view) {
+                String vaiTroMoi = "admin".equals(nguoiDung.getVaiTro()) ? "user" : "admin";
+                String tenVaiTroMoi = "admin".equals(vaiTroMoi) ? "Admin" : "User";
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Đổi quyền");
+                builder.setMessage("Bạn có muốn đổi quyền của \"" + nguoiDung.getEmail() + "\" thành " + tenVaiTroMoi + " không?");
+                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        boolean thanhCong = csdlHelper.capNhatVaiTro(nguoiDung.getId(), vaiTroMoi);
+                        if (thanhCong) {
+                            Toast.makeText(context, "Đã đổi quyền thành " + vaiTroMoi, Toast.LENGTH_SHORT).show();
+                            ((QuanLyNguoiDungActivity) context).taiDanhSachNguoiDung();
+                            dialogInterface.dismiss();
+                        } else {
+                            Toast.makeText(context, "Lỗi đổi quyền", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    suKienDoiVaiTro.khiDoiVaiTro(nguoiDung, vaiTroMoi);
-                }
+                });
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.create().show();
             }
         });
-        
-        // Bắt sự kiện khi nhấn nút Xóa
-        holder.btnXoa.setOnClickListener(new View.OnClickListener() {
+
+        btnXoa.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (suKienXoaNguoiDung != null) {
-                    suKienXoaNguoiDung.khiXoaNguoiDung(nguoiDung);
+            public void onClick(View view) {
+                if (nguoiDung.getId() == quanLyPhienDangNhap.layIdNguoiDung()) {
+                    Toast.makeText(context, "Không thể xóa tài khoản đang đăng nhập", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Xác nhận xóa");
+                builder.setMessage("Bạn có muốn xóa người dùng \"" + nguoiDung.getEmail() + "\" không?");
+                builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        boolean thanhCong = csdlHelper.xoaNguoiDung(nguoiDung.getId());
+                        if (thanhCong) {
+                            Toast.makeText(context, "Đã xóa người dùng \"" + nguoiDung.getEmail() + "\"", Toast.LENGTH_SHORT).show();
+                            ((QuanLyNguoiDungActivity) context).taiDanhSachNguoiDung();
+                            dialogInterface.dismiss();
+                        } else {
+                            Toast.makeText(context, "Lỗi xóa người dùng", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.create().show();
             }
         });
-    }
 
-    // Đếm tổng số lượng người dùng
-    @Override 
-    public int getItemCount() { 
-        if (danhSachNguoiDung != null) {
-            return danhSachNguoiDung.size();
-        } else {
-            return 0;
-        }
-    }
-
-    // Lớp chứa các thành phần giao diện của một Item Người Dùng
-    public static class HolderNguoiDung extends RecyclerView.ViewHolder {
-        TextView tvHoTen, tvEmail, tvVaiTro;
-        Button btnDoiVaiTro, btnXoa;
-
-        public HolderNguoiDung(@NonNull View itemView) {
-            super(itemView);
-            // Ánh xạ các nút và chữ từ file XML
-            tvHoTen = itemView.findViewById(R.id.tvHoTen);
-            tvEmail = itemView.findViewById(R.id.tvEmail);
-            tvVaiTro = itemView.findViewById(R.id.tvVaiTro);
-            btnDoiVaiTro = itemView.findViewById(R.id.btnDoiVaiTro);
-            btnXoa = itemView.findViewById(R.id.btnXoa);
-        }
+        return customView;
     }
 }

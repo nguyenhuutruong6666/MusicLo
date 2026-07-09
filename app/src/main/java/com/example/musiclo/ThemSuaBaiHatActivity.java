@@ -51,7 +51,7 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
     CSDLHelper csdlHelper;
     ExecutorService boThucThi;
 
-    private final String[] DANH_SACH_THE_LOAI = {"Tất cả", "Pop", "Rock", "Ballad", "V-Pop", "R&B", "Rap", "Khác"};
+    private final String[] DANH_SACH_THE_LOAI = {"Pop", "Rock", "Ballad", "V-Pop", "R&B", "Rap", "Khác"};
 
     private final ActivityResultLauncher<Intent> chonAnhLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

@@ -3,18 +3,15 @@ package com.example.musiclo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musiclo.adapters.BaiHatYeuThichAdapter;
 import com.example.musiclo.models.BaiHat;
@@ -27,13 +24,12 @@ import java.util.List;
 
 public class DanhSachYeuThichActivity extends AppCompatActivity {
 
-    RecyclerView rvDanhSachYeuThich;
-    ProgressBar progressBar;
+    ListView rvDanhSachYeuThich;
     TextView tvTrong;
     BottomNavigationView bottomNav;
 
     BaiHatYeuThichAdapter adapter;
-    List<BaiHat> danhSachYeuThich;
+    ArrayList<BaiHat> danhSachYeuThich;
 
     CSDLHelper csdlHelper;
     QuanLyPhienDangNhap quanLyPhienDangNhap;
@@ -53,41 +49,12 @@ public class DanhSachYeuThichActivity extends AppCompatActivity {
         quanLyPhienDangNhap = new QuanLyPhienDangNhap(this);
 
         rvDanhSachYeuThich = findViewById(R.id.rvDanhSachYeuThich);
-        progressBar = findViewById(R.id.thanhTienTrinh);
         tvTrong = findViewById(R.id.tvTrong);
         bottomNav = findViewById(R.id.thanhDieuHuongDuoi);
 
         danhSachYeuThich = new ArrayList<>();
-        adapter = new BaiHatYeuThichAdapter(this, danhSachYeuThich);
-        rvDanhSachYeuThich.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new BaiHatYeuThichAdapter(this, R.layout.item_bai_hat_yeu_thich, danhSachYeuThich);
         rvDanhSachYeuThich.setAdapter(adapter);
-
-        adapter.datSuKienNhan(baiHat -> {
-            Intent intent = new Intent(this, PhatNhacActivity.class);
-            
-            // Tạo danh sách ID từ danh sách yêu thích
-            ArrayList<Integer> danhSachId = new ArrayList<>();
-            for (BaiHat bh : danhSachYeuThich) {
-                danhSachId.add(bh.getId());
-            }
-            
-            // Lấy vị trí của bài hát vừa click
-            int viTri = danhSachYeuThich.indexOf(baiHat);
-            
-            intent.putIntegerArrayListExtra("danhSachId", danhSachId);
-            intent.putExtra("viTriHienTai", viTri);
-            
-            startActivity(intent);
-        });
-
-        adapter.datSuKienBoYeuThich(baiHat ->
-                new AlertDialog.Builder(this)
-                        .setTitle("Xác nhận bỏ yêu thích")
-                        .setMessage("Bạn có chắc chắn muốn bỏ bài hát này?")
-                        .setPositiveButton("Bỏ", (d, w) -> xoaYeuThich(baiHat))
-                        .setNegativeButton("Hủy", null)
-                        .show()
-        );
 
         bottomNav.setSelectedItemId(R.id.nav_favorites);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -102,8 +69,6 @@ public class DanhSachYeuThichActivity extends AppCompatActivity {
             }
             return false;
         });
-
-        taiDanhSachYeuThich();
     }
 
     @Override
@@ -112,26 +77,24 @@ public class DanhSachYeuThichActivity extends AppCompatActivity {
         taiDanhSachYeuThich();
     }
 
-    private void taiDanhSachYeuThich() {
+    public void taiDanhSachYeuThich() {
         int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
         if (idNguoiDung == -1) {
             Toast.makeText(this, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
-        progressBar.setVisibility(View.VISIBLE);
+
         danhSachYeuThich.clear();
         danhSachYeuThich.addAll(csdlHelper.layDanhSachYeuThich(idNguoiDung));
-        progressBar.setVisibility(View.GONE);
-        tvTrong.setVisibility(danhSachYeuThich.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.notifyDataSetChanged();
-    }
 
-    private void xoaYeuThich(BaiHat baiHat) {
-        int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
-        if (idNguoiDung == -1) return;
-        csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
-        Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
-        taiDanhSachYeuThich();
+        if (danhSachYeuThich.isEmpty()) {
+            tvTrong.setVisibility(View.VISIBLE);
+            rvDanhSachYeuThich.setVisibility(View.GONE);
+        } else {
+            tvTrong.setVisibility(View.GONE);
+            rvDanhSachYeuThich.setVisibility(View.VISIBLE);
+        }
     }
 }
-
