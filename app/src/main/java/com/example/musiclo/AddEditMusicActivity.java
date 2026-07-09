@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.Manifest;
 import android.content.Intent;
@@ -28,9 +28,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import com.bumptech.glide.Glide;
-import com.example.musicapp.models.MusicModel;
-import com.example.musicapp.utils.CloudinaryUploader;
-import com.example.musicapp.utils.FirebaseHelper;
+import com.example.musiclo.models.MusicModel;
+import com.example.musiclo.utils.CloudinaryUploader;
+import com.example.musiclo.utils.FirebaseHelper;
 import com.google.firebase.database.DatabaseReference;
 
 import java.text.SimpleDateFormat;

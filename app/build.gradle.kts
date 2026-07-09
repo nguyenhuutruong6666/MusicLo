@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.musicapp"
+    namespace = "com.example.musiclo"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.musicapp"
+        applicationId = "com.example.musiclo"
         minSdk = 23
         targetSdk = 35
         versionCode = 1

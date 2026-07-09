@@ -1,4 +1,4 @@
-package com.example.musicapp.utils;
+package com.example.musiclo.utils;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

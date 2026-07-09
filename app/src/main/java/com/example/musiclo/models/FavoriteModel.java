@@ -1,4 +1,4 @@
-package com.example.musicapp.models;
+package com.example.musiclo.models;
 
 public class FavoriteModel {
 

@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.musicapp.adapters.MusicAdapter;
-import com.example.musicapp.models.FavoriteModel;
-import com.example.musicapp.models.MusicModel;
-import com.example.musicapp.utils.FirebaseHelper;
-import com.example.musicapp.utils.SessionManager;
+import com.example.musiclo.adapters.MusicAdapter;
+import com.example.musiclo.models.FavoriteModel;
+import com.example.musiclo.models.MusicModel;
+import com.example.musiclo.utils.FirebaseHelper;
+import com.example.musiclo.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

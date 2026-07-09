@@ -1,4 +1,4 @@
-package com.example.musicapp.adapters;
+package com.example.musiclo.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.musicapp.R;
-import com.example.musicapp.models.UserModel;
+import com.example.musiclo.R;
+import com.example.musiclo.models.UserModel;
 
 import java.util.List;
 

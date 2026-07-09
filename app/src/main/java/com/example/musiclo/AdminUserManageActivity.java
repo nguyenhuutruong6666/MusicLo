@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,9 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.musicapp.adapters.UserAdapter;
-import com.example.musicapp.models.UserModel;
-import com.example.musicapp.utils.FirebaseHelper;
+import com.example.musiclo.adapters.UserAdapter;
+import com.example.musiclo.models.UserModel;
+import com.example.musiclo.utils.FirebaseHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;

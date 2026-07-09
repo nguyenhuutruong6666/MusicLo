@@ -1,4 +1,4 @@
-package com.example.musicapp.adapters;
+package com.example.musiclo.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.musicapp.R;
-import com.example.musicapp.models.MusicModel;
+import com.example.musiclo.R;
+import com.example.musiclo.models.MusicModel;
 
 import java.util.List;
 

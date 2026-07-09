@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.musicapp.models.UserModel;
-import com.example.musicapp.utils.FirebaseHelper;
+import com.example.musiclo.models.UserModel;
+import com.example.musiclo.utils.FirebaseHelper;
 import com.google.firebase.auth.AuthResult;
 
 import java.text.SimpleDateFormat;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MusicApp</string>
+    <string name="app_name">MusicLo</string>
     <string name="login">Đăng nhập</string>
     <string name="register">Đăng ký</string>
     <string name="email">Email</string>

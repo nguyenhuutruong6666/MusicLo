@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-import com.example.musicapp.utils.FirebaseHelper;
-import com.example.musicapp.utils.SessionManager;
+import com.example.musiclo.utils.FirebaseHelper;
+import com.example.musiclo.utils.SessionManager;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 

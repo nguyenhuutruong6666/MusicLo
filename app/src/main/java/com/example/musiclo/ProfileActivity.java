@@ -1,4 +1,4 @@
-package com.example.musicapp;
+package com.example.musiclo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 
 import com.bumptech.glide.Glide;
-import com.example.musicapp.utils.FirebaseHelper;
-import com.example.musicapp.utils.SessionManager;
+import com.example.musiclo.utils.FirebaseHelper;
+import com.example.musiclo.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
