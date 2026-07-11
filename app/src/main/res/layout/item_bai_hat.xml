@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground"
+    android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +58,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_favorite_border"
             app:tint="@color/text_primary"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:focusable="false" />
 
     </LinearLayout>
 
