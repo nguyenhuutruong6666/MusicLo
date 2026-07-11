@@ -1,8 +1,8 @@
 package com.example.musiclo;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,11 +16,22 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.musiclo.utils.QuanLyPhienDangNhap;
 
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 public class GuiPhanHoiActivity extends AppCompatActivity {
 
     ImageButton btnQuayLai;
     EditText edtTieuDe, edtNoiDung;
     Button btnGui;
+
     QuanLyPhienDangNhap quanLyPhienDangNhap;
 
     @Override
@@ -42,41 +53,85 @@ public class GuiPhanHoiActivity extends AppCompatActivity {
         btnGui = findViewById(R.id.btnGui);
 
         btnQuayLai.setOnClickListener(v -> finish());
-        btnGui.setOnClickListener(v -> xuLyGuiPhanHoi());
-    }
 
-    private void xuLyGuiPhanHoi() {
-        String tieuDe = edtTieuDe.getText().toString().trim();
-        String noiDung = edtNoiDung.getText().toString().trim();
+        btnGui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String tieuDe = edtTieuDe.getText().toString().trim();
+                String noiDung = edtNoiDung.getText().toString().trim();
 
-        if (tieuDe.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
-            return;
-        }
+                if (tieuDe.isEmpty()) {
+                    Toast.makeText(GuiPhanHoiActivity.this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (noiDung.isEmpty()) {
+                    Toast.makeText(GuiPhanHoiActivity.this, "Vui lòng nhập nội dung", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        if (noiDung.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập nội dung", Toast.LENGTH_SHORT).show();
-            return;
-        }
+                try {
+                    String fromEmail = "nguyenhuutruongchatgpt@gmail.com";
+                    String passWord = "xuysbactoasarzzr"; // App Password không có dấu cách
+                    String toEmail = "texclostore@gmail.com";
+                    String host = "smtp.gmail.com";
 
-        String emailNguoiDung = quanLyPhienDangNhap.layEmail();
-        String hoTen = quanLyPhienDangNhap.layHoTen();
-        if (hoTen == null || hoTen.isEmpty()) {
-            hoTen = "Người dùng MusicLo";
-        }
+                    // Lấy thông tin người gửi từ phiên đăng nhập
+                    String hoTen = quanLyPhienDangNhap.layHoTen();
+                    String emailND = quanLyPhienDangNhap.layEmail();
+                    if (hoTen == null || hoTen.isEmpty())
+                        hoTen = "Người dùng MusicLo";
 
-        String emailBody = "Người gửi: " + hoTen + " (" + emailNguoiDung + ")\n\n" +
-                "Nội dung phản hồi:\n" + noiDung;
+                    String subject = "[MusicLo Feedback] " + tieuDe;
+                    String content = "Người gửi: " + hoTen + " (" + emailND + ")\n\n"
+                            + "Nội dung phản hồi:\n" + noiDung;
 
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:nguyenhuutruongchatgpt@gmail.com"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, "[MusicLo Feedback] " + tieuDe);
-        intent.putExtra(Intent.EXTRA_TEXT, emailBody);
+                    // Dùng new Properties() thay vì System.getProperties() để tránh lẫn cấu hình cũ
+                    Properties properties = new Properties();
+                    properties.put("mail.smtp.host", host);
+                    properties.put("mail.smtp.port", "465");
+                    properties.put("mail.smtp.ssl.enable", "true"); // phải là String, không phải boolean
+                    properties.put("mail.smtp.auth", "true"); // phải là String, không phải boolean
 
-        try {
-            startActivity(Intent.createChooser(intent, "Chọn ứng dụng Email để gửi..."));
-        } catch (Exception e) {
-            Toast.makeText(this, "Không tìm thấy ứng dụng Email nào trên máy!", Toast.LENGTH_SHORT).show();
-        }
+                    Session session = Session.getInstance(properties, new Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(fromEmail, passWord);
+                        }
+                    });
+
+                    MimeMessage mimeMessage = new MimeMessage(session);
+                    mimeMessage.addRecipients(Message.RecipientType.TO,
+                            String.valueOf(new InternetAddress(toEmail)));
+                    mimeMessage.setSubject(subject);
+                    mimeMessage.setText(content);
+
+                    Thread emailThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Transport.send(mimeMessage);
+                                // Gửi thành công → cập nhật UI trên main thread
+                                runOnUiThread(() -> {
+                                    edtTieuDe.setText("");
+                                    edtNoiDung.setText("");
+                                    Toast.makeText(GuiPhanHoiActivity.this,
+                                            "Phản hồi đã được gửi, cảm ơn bạn ❤️", Toast.LENGTH_SHORT).show();
+                                });
+                            } catch (Exception e) {
+                                Log.d("Lỗi thread email", e.toString());
+                                // Gửi thất bại → thông báo lỗi trên main thread
+                                runOnUiThread(() -> Toast.makeText(GuiPhanHoiActivity.this,
+                                        "Gửi thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                            }
+                        }
+                    });
+                    emailThread.start();
+
+                } catch (Exception e) {
+                    Log.d("Lỗi gửi email", e.toString());
+                    Toast.makeText(GuiPhanHoiActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
