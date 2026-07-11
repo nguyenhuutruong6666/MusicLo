@@ -27,7 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class DanhSachBaiHatActivity extends AppCompatActivity {
+public class DanhSachBaiHatActivity extends AppCompatActivity implements View.OnClickListener {
 
     ListView rvDanhSachBaiHat;
     EditText edtTimKiem;
@@ -73,6 +73,23 @@ public class DanhSachBaiHatActivity extends AppCompatActivity {
         
         baiHatAdapter = new BaiHatAdapter(this, R.layout.item_bai_hat, danhSachHienThi, danhSachIdYeuThich);
         rvDanhSachBaiHat.setAdapter(baiHatAdapter);
+
+        rvDanhSachBaiHat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(DanhSachBaiHatActivity.this, PhatNhacActivity.class);
+                
+                ArrayList<Integer> danhSachId = new ArrayList<>();
+                for (BaiHat bh : danhSachHienThi) {
+                    danhSachId.add(bh.getId());
+                }
+                
+                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
+                intent.putExtra("viTriHienTai", position);
+                
+                startActivity(intent);
+            }
+        });
         
         ArrayAdapter<String> theLoaiAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, DANH_SACH_THE_LOAI);
         theLoaiAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -178,6 +195,27 @@ public class DanhSachBaiHatActivity extends AppCompatActivity {
         } else {
             tvTrong.setVisibility(View.GONE);
             rvDanhSachBaiHat.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnYeuThich) {
+            BaiHat baiHat = (BaiHat) v.getTag();
+            int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
+            if (idNguoiDung == -1) {
+                Toast.makeText(this, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            boolean hienTaiDaYeuThich = danhSachIdYeuThich.contains(baiHat.getId());
+            if (hienTaiDaYeuThich) {
+                csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
+                Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
+            } else {
+                csdlHelper.themYeuThich(idNguoiDung, baiHat.getId());
+                Toast.makeText(this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+            }
+            taiDanhSachYeuThich();
         }
     }
 }

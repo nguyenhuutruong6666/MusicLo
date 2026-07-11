@@ -16,12 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.example.musiclo.DanhSachBaiHatActivity;
-import com.example.musiclo.PhatNhacActivity;
 import com.example.musiclo.R;
 import com.example.musiclo.models.BaiHat;
-import com.example.musiclo.utils.CSDLHelper;
-import com.example.musiclo.utils.QuanLyPhienDangNhap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +27,6 @@ public class BaiHatAdapter extends ArrayAdapter<BaiHat> {
     int resource;
     ArrayList<BaiHat> listBaiHat;
     ArrayList<Integer> danhSachIdYeuThich;
-    CSDLHelper csdlHelper;
-    QuanLyPhienDangNhap quanLyPhienDangNhap;
 
     public BaiHatAdapter(Activity context, int resource, ArrayList<BaiHat> listBaiHat, ArrayList<Integer> danhSachIdYeuThich) {
         super(context, resource, listBaiHat);
@@ -40,8 +34,6 @@ public class BaiHatAdapter extends ArrayAdapter<BaiHat> {
         this.resource = resource;
         this.listBaiHat = listBaiHat;
         this.danhSachIdYeuThich = danhSachIdYeuThich;
-        this.csdlHelper = CSDLHelper.layThucThe(context);
-        this.quanLyPhienDangNhap = new QuanLyPhienDangNhap(context);
     }
 
     @Override
@@ -103,44 +95,8 @@ public class BaiHatAdapter extends ArrayAdapter<BaiHat> {
             btnYeuThich.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));
         }
 
-        btnYeuThich.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
-                if (idNguoiDung == -1) {
-                    Toast.makeText(context, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                boolean hienTaiDaYeuThich = danhSachIdYeuThich.contains(baiHat.getId());
-                if (hienTaiDaYeuThich) {
-                    csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
-                    Toast.makeText(context, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
-                } else {
-                    csdlHelper.themYeuThich(idNguoiDung, baiHat.getId());
-                    Toast.makeText(context, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                }
-                ((DanhSachBaiHatActivity) context).taiDanhSachYeuThich();
-            }
-        });
-
-        customView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : listBaiHat) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                int viTri = listBaiHat.indexOf(baiHat);
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
-                intent.putExtra("viTriHienTai", viTri);
-                
-                context.startActivity(intent);
-            }
-        });
+        btnYeuThich.setTag(baiHat);
+        btnYeuThich.setOnClickListener((View.OnClickListener) context);
 
         return customView;
     }

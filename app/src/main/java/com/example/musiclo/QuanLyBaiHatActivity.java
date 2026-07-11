@@ -20,7 +20,13 @@ import com.example.musiclo.utils.CSDLHelper;
 
 import java.util.ArrayList;
 
-public class QuanLyBaiHatActivity extends AppCompatActivity {
+import android.content.DialogInterface;
+import androidx.appcompat.app.AlertDialog;
+
+import android.view.View;
+import android.widget.AdapterView;
+
+public class QuanLyBaiHatActivity extends AppCompatActivity implements View.OnClickListener {
 
     ListView rvDanhSachBaiHat;
     Button btnThem;
@@ -53,6 +59,23 @@ public class QuanLyBaiHatActivity extends AppCompatActivity {
         danhSachBaiHat = new ArrayList<>();
         adapter = new QuanLyBaiHatAdapter(this, R.layout.item_quan_ly_bai_hat, danhSachBaiHat);
         rvDanhSachBaiHat.setAdapter(adapter);
+
+        rvDanhSachBaiHat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(QuanLyBaiHatActivity.this, PhatNhacActivity.class);
+                
+                ArrayList<Integer> danhSachId = new ArrayList<>();
+                for (BaiHat bh : danhSachBaiHat) {
+                    danhSachId.add(bh.getId());
+                }
+                
+                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
+                intent.putExtra("viTriHienTai", position);
+                
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -65,5 +88,43 @@ public class QuanLyBaiHatActivity extends AppCompatActivity {
         danhSachBaiHat.clear();
         danhSachBaiHat.addAll(csdlHelper.layTatCaBaiHat());
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        BaiHat baiHat = (BaiHat) v.getTag();
+        if (v.getId() == R.id.btnSua) {
+            Intent intent = new Intent(this, ThemSuaBaiHatActivity.class);
+            intent.putExtra("idBaiHat", baiHat.getId());
+            startActivity(intent);
+        } else if (v.getId() == R.id.btnXoa) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Xác nhận xóa");
+            builder.setMessage("Bạn có chắc chắn muốn xóa bài hát này không?");
+            builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    try {
+                        boolean thanhCong = csdlHelper.xoaBaiHat(baiHat.getId());
+                        if (thanhCong) {
+                            Toast.makeText(QuanLyBaiHatActivity.this, "Đã xóa bài hát", Toast.LENGTH_SHORT).show();
+                            taiDanhSachBaiHat();
+                            dialogInterface.dismiss();
+                        } else {
+                            Toast.makeText(QuanLyBaiHatActivity.this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(QuanLyBaiHatActivity.this, "Lỗi xóa dữ liệu", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            builder.create().show();
+        }
     }
 }

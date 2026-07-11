@@ -16,13 +16,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
-import com.example.musiclo.PhatNhacActivity;
-import com.example.musiclo.QuanLyBaiHatActivity;
 import com.example.musiclo.R;
-import com.example.musiclo.ThemSuaBaiHatActivity;
 import com.example.musiclo.models.BaiHat;
-import com.example.musiclo.utils.CSDLHelper;
+import com.bumptech.glide.Glide;
+import com.example.musiclo.models.BaiHat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,14 +28,12 @@ public class QuanLyBaiHatAdapter extends ArrayAdapter<BaiHat> {
     Activity context;
     int resource;
     ArrayList<BaiHat> listBaiHat;
-    CSDLHelper csdlHelper;
 
     public QuanLyBaiHatAdapter(Activity context, int resource, ArrayList<BaiHat> listBaiHat) {
         super(context, resource, listBaiHat);
         this.context = context;
         this.resource = resource;
         this.listBaiHat = listBaiHat;
-        this.csdlHelper = CSDLHelper.layThucThe(context);
     }
 
     @Override
@@ -96,69 +91,12 @@ public class QuanLyBaiHatAdapter extends ArrayAdapter<BaiHat> {
         }
 
         // Bắt sự kiện khi người dùng nhấn nút Sửa
-        btnSua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ThemSuaBaiHatActivity.class);
-                intent.putExtra("idBaiHat", baiHat.getId());
-                context.startActivity(intent);
-            }
-        });
-        
-        // Bắt sự kiện khi người dùng nhấn nút Xóa
-        btnXoa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Xác nhận xóa");
-                builder.setMessage("Bạn có chắc chắn muốn xóa bài hát này không?");
-                builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        try {
-                            boolean thanhCong = csdlHelper.xoaBaiHat(baiHat.getId());
-                            if (thanhCong) {
-                                Toast.makeText(context, "Đã xóa bài hát", Toast.LENGTH_SHORT).show();
-                                ((QuanLyBaiHatActivity) context).taiDanhSachBaiHat();
-                                dialogInterface.dismiss();
-                            } else {
-                                Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(context, "Lỗi xóa dữ liệu", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                builder.create().show();
-            }
-        });
-        
-        // Bắt sự kiện khi người dùng nhấn vào toàn bộ bài hát
-        customView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : listBaiHat) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                int viTri = listBaiHat.indexOf(baiHat);
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
-                intent.putExtra("viTriHienTai", viTri);
-                
-                context.startActivity(intent);
-            }
-        });
+        btnSua.setTag(baiHat);
+        btnSua.setOnClickListener((View.OnClickListener) context);
 
+        btnXoa.setTag(baiHat);
+        btnXoa.setOnClickListener((View.OnClickListener) context);
+        
         return customView;
     }
 }

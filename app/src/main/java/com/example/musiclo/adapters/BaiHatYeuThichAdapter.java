@@ -15,12 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
-import com.example.musiclo.DanhSachYeuThichActivity;
-import com.example.musiclo.PhatNhacActivity;
 import com.example.musiclo.R;
 import com.example.musiclo.models.BaiHat;
-import com.example.musiclo.utils.CSDLHelper;
-import com.example.musiclo.utils.QuanLyPhienDangNhap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,16 +25,12 @@ public class BaiHatYeuThichAdapter extends ArrayAdapter<BaiHat> {
     Activity context;
     int resource;
     ArrayList<BaiHat> listBaiHat;
-    CSDLHelper csdlHelper;
-    QuanLyPhienDangNhap quanLyPhienDangNhap;
 
     public BaiHatYeuThichAdapter(Activity context, int resource, ArrayList<BaiHat> listBaiHat) {
         super(context, resource, listBaiHat);
         this.context = context;
         this.resource = resource;
         this.listBaiHat = listBaiHat;
-        this.csdlHelper = CSDLHelper.layThucThe(context);
-        this.quanLyPhienDangNhap = new QuanLyPhienDangNhap(context);
     }
 
     @Override
@@ -88,39 +80,8 @@ public class BaiHatYeuThichAdapter extends ArrayAdapter<BaiHat> {
         }
 
         // Xóa khỏi danh sách yêu thích
-        btnBoYeuThich.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
-                if (idNguoiDung != -1) {
-                    csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
-                    Toast.makeText(context, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
-                    ((DanhSachYeuThichActivity) context).taiDanhSachYeuThich();
-                } else {
-                    Toast.makeText(context, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // Bắt sự kiện khi người dùng nhấn vào toàn bộ bài hát
-        customView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : listBaiHat) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                int viTri = listBaiHat.indexOf(baiHat);
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
-                intent.putExtra("viTriHienTai", viTri);
-                
-                context.startActivity(intent);
-            }
-        });
+        btnBoYeuThich.setTag(baiHat);
+        btnBoYeuThich.setOnClickListener((View.OnClickListener) context);
 
         return customView;
     }

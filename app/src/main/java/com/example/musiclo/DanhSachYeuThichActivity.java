@@ -21,8 +21,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.AdapterView;
 
-public class DanhSachYeuThichActivity extends AppCompatActivity {
+public class DanhSachYeuThichActivity extends AppCompatActivity implements View.OnClickListener {
 
     ListView rvDanhSachYeuThich;
     TextView tvTrong;
@@ -55,6 +56,23 @@ public class DanhSachYeuThichActivity extends AppCompatActivity {
         danhSachYeuThich = new ArrayList<>();
         adapter = new BaiHatYeuThichAdapter(this, R.layout.item_bai_hat_yeu_thich, danhSachYeuThich);
         rvDanhSachYeuThich.setAdapter(adapter);
+
+        rvDanhSachYeuThich.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(DanhSachYeuThichActivity.this, PhatNhacActivity.class);
+                
+                ArrayList<Integer> danhSachId = new ArrayList<>();
+                for (BaiHat bh : danhSachYeuThich) {
+                    danhSachId.add(bh.getId());
+                }
+                
+                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
+                intent.putExtra("viTriHienTai", position);
+                
+                startActivity(intent);
+            }
+        });
 
         bottomNav.setSelectedItemId(R.id.nav_favorites);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -95,6 +113,21 @@ public class DanhSachYeuThichActivity extends AppCompatActivity {
         } else {
             tvTrong.setVisibility(View.GONE);
             rvDanhSachYeuThich.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnBoYeuThich) {
+            BaiHat baiHat = (BaiHat) v.getTag();
+            int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
+            if (idNguoiDung != -1) {
+                csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
+                Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
+                taiDanhSachYeuThich();
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
