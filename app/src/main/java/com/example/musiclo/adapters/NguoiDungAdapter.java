@@ -56,7 +56,7 @@ public class NguoiDungAdapter extends ArrayAdapter<NguoiDung> {
         Button btnXoa = customView.findViewById(R.id.btnXoa);
 
         NguoiDung nguoiDung = listNguoiDung.get(position);
-        
+
         if (nguoiDung.getEmail() != null) {
             tvEmail.setText(nguoiDung.getEmail());
         } else {
@@ -87,7 +87,8 @@ public class NguoiDungAdapter extends ArrayAdapter<NguoiDung> {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Đổi quyền");
-                builder.setMessage("Bạn có muốn đổi quyền của \"" + nguoiDung.getEmail() + "\" thành " + tenVaiTroMoi + " không?");
+                builder.setMessage(
+                        "Bạn có muốn đổi quyền của \"" + nguoiDung.getEmail() + "\" thành " + tenVaiTroMoi + " không?");
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -118,7 +119,7 @@ public class NguoiDungAdapter extends ArrayAdapter<NguoiDung> {
                     Toast.makeText(context, "Không thể xóa tài khoản đang đăng nhập", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Xác nhận xóa");
                 builder.setMessage("Bạn có muốn xóa người dùng \"" + nguoiDung.getEmail() + "\" không?");
@@ -127,7 +128,8 @@ public class NguoiDungAdapter extends ArrayAdapter<NguoiDung> {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         boolean thanhCong = csdlHelper.xoaNguoiDung(nguoiDung.getId());
                         if (thanhCong) {
-                            Toast.makeText(context, "Đã xóa người dùng \"" + nguoiDung.getEmail() + "\"", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Đã xóa người dùng \"" + nguoiDung.getEmail() + "\"",
+                                    Toast.LENGTH_SHORT).show();
                             ((QuanLyNguoiDungActivity) context).taiDanhSachNguoiDung();
                             dialogInterface.dismiss();
                         } else {
