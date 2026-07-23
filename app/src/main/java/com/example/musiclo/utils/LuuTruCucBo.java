@@ -15,12 +15,12 @@ public class LuuTruCucBo {
     private static final String THU_MUC_ANH = "images";
     private static final String THU_MUC_NHAC = "music";
 
-    /** Lưu ảnh từ Uri về thư mục nội bộ của app. Trả về đường dẫn hoặc null nếu lỗi. */
+    // Lưu ảnh từ Uri về thư mục nội bộ của app. Trả về đường dẫn hoặc null nếu lỗi
     public static String luuAnhVeMay(Context context, Uri uriAnh) {
         return luuFileVeMay(context, uriAnh, THU_MUC_ANH, ".jpg");
     }
 
-    /** Lưu file MP3 từ Uri về thư mục nội bộ của app. Trả về đường dẫn hoặc null nếu lỗi. */
+    // Lưu file MP3 từ Uri về thư mục nội bộ của app. Trả về đường dẫn hoặc null nếu lỗi
     public static String luuNhacVeMay(Context context, Uri uriNhac) {
         return luuFileVeMay(context, uriNhac, THU_MUC_NHAC, ".mp3");
     }
@@ -48,7 +48,7 @@ public class LuuTruCucBo {
         }
     }
 
-    /** Xóa file tại đường dẫn chỉ định. */
+    // Xóa file tại đường dẫn chỉ định
     public static void xoaFile(String duongDan) {
         if (duongDan != null && !duongDan.isEmpty()) {
             File file = new File(duongDan);

@@ -89,7 +89,7 @@ public class BaiHatAdapter extends ArrayAdapter<BaiHat> {
 
         if (daYeuThich) {
             btnYeuThich.setImageResource(R.drawable.ic_favorite_filled);
-            btnYeuThich.setColorFilter(ContextCompat.getColor(context, R.color.primary_purple));
+            btnYeuThich.setColorFilter(ContextCompat.getColor(context, R.color.accent_red));
         } else {
             btnYeuThich.setImageResource(R.drawable.ic_favorite_border);
             btnYeuThich.setColorFilter(ContextCompat.getColor(context, R.color.text_secondary));

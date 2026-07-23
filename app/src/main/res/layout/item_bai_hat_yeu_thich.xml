@@ -57,7 +57,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_favorite_filled"
-            app:tint="@color/primary_purple"
+            app:tint="@color/accent_red"
             android:padding="12dp"
             android:focusable="false" />
 

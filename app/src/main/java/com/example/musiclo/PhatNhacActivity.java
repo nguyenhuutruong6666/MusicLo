@@ -200,7 +200,7 @@ public class PhatNhacActivity extends AppCompatActivity {
 
     private void capNhatGiaoDienYeuThich() {
         btnYeuThich.setImageResource(daYeuThich ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
-        btnYeuThich.setColorFilter(ContextCompat.getColor(this, daYeuThich ? R.color.primary_purple : R.color.text_secondary));
+        btnYeuThich.setColorFilter(ContextCompat.getColor(this, daYeuThich ? R.color.accent_red : R.color.text_secondary));
     }
 
     private void chuanBiNhac(String duongDanNhac) {

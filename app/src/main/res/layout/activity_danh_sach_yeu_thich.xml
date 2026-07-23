@@ -63,7 +63,7 @@
         android:layout_marginBottom="24dp"
         android:background="@drawable/bg_bottom_nav_rounded"
         android:elevation="12dp"
-        app:itemIconTint="@color/primary_purple"
+        app:itemIconTint="@color/accent_teal"
         app:itemTextColor="@color/text_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

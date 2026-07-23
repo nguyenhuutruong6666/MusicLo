@@ -84,7 +84,7 @@
             android:id="@+id/btnGui"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:backgroundTint="@color/primary_blue"
+            android:backgroundTint="@color/accent_teal"
             android:text="Gửi qua Gmail"
             android:textColor="@color/text_on_primary"
             android:textSize="16sp"

@@ -62,7 +62,7 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="24dp"
-                android:backgroundTint="@color/primary_blue"
+                android:backgroundTint="@color/accent_teal"
                 android:text="Chọn ảnh bìa"
                 android:textColor="@color/text_on_primary"
                 android:textSize="14sp" />
@@ -126,7 +126,7 @@
                     android:id="@+id/btnChonNhac"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:backgroundTint="@color/primary_blue"
+                    android:backgroundTint="@color/accent_teal"
                     android:text="Chọn MP3"
                     android:textSize="12sp" />
 
@@ -148,7 +148,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:progressTint="@color/primary_purple"
+                android:progressTint="@color/accent_teal"
                 android:visibility="gone" />
 
             <TextView
@@ -166,7 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/primary_purple"
+                android:backgroundTint="@color/accent_teal"
                 android:text="Lưu bài hát"
                 android:textColor="@color/text_on_primary"
                 android:textSize="16sp"

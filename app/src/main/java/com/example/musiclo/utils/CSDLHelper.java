@@ -218,9 +218,8 @@ public class CSDLHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // ==================== NGƯỜI DÙNG ====================
-
-    /** Thêm người dùng mới. Trả về id nếu thành công, -1 nếu email đã tồn tại. */
+    // NGƯỜI DÙNG
+    // Thêm người dùng mới. Trả về id nếu thành công, -1 nếu email đã tồn tại.
     public long themNguoiDung(String email, String matKhau, String hoTen) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues giaTriMoi = new ContentValues();
@@ -301,8 +300,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
         return new NguoiDung(id, email, matKhau, vaiTro, hoTen);
     }
 
-    // ==================== BÀI HÁT ====================
-
+    // BÀI HÁT
     public long themBaiHat(String tenBaiHat, String caSi, String theLoai,
                            String moTa, String hinhAnh, String linkBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
@@ -379,8 +377,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
         return new BaiHat(id, tenBaiHat, caSi, theLoai, moTa, hinhAnh, linkBaiHat);
     }
 
-    // ==================== YÊU THÍCH ====================
-
+    //YÊU THÍCH
     public boolean themYeuThich(int idNguoiDung, int idBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues giaTriMoi = new ContentValues();

@@ -99,8 +99,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="16dp"
-        android:progressTint="@color/primary_purple"
-        android:thumbTint="@color/primary_purple"
+        android:progressTint="@color/accent_teal"
+        android:thumbTint="@color/accent_teal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvMoTa" />
