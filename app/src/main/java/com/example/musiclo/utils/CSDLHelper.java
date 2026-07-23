@@ -11,11 +11,15 @@ import com.example.musiclo.models.NguoiDung;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.util.Random;
 
 public class CSDLHelper extends SQLiteOpenHelper {
 
     private static final String TEN_CSDL = "musiclo.db";
-    private static final int PHIEN_BAN = 3;
+    private static final int PHIEN_BAN = 5;
 
     // Tên bảng
     private static final String BANG_NGUOI_DUNG = "users";
@@ -44,9 +48,11 @@ public class CSDLHelper extends SQLiteOpenHelper {
     private static final String COT_ID_BH_YT = "songId";
 
     private static CSDLHelper thucThe;
+    private Context mContext;
 
     private CSDLHelper(Context context) {
         super(context, TEN_CSDL, null, PHIEN_BAN);
+        this.mContext = context;
     }
 
     public static synchronized CSDLHelper layThucThe(Context context) {
@@ -90,6 +96,118 @@ public class CSDLHelper extends SQLiteOpenHelper {
         admin.put(COT_VAI_TRO, "admin");
         admin.put(COT_HO_TEN, "Quản trị viên");
         db.insert(BANG_NGUOI_DUNG, null, admin);
+        
+        seedData(db);
+    }
+
+    private void seedData(SQLiteDatabase db) {
+        java.util.Map<String, String> caSiMap = new java.util.HashMap<>();
+        caSiMap.put("50 CUỘC GỌI NHỠ", "TINH HÀ \"SAY HI\"; CoolKid; Quang Hùng MasterD; Jaysonlei; CODYNAMVO");
+        caSiMap.put("50 Năm Về Sau (Nghĩ Đến Ngày Chúng Ta Sẽ Già)", "Ducth Music & Thiện ND");
+        caSiMap.put("Ai Ngoài Anh", "VSTRA, Tyronee");
+        caSiMap.put("Âm Thầm Bên Em", "Sơn Tùng (M-TP)");
+        caSiMap.put("Anh Đã Không Biết Cách Yêu Em", "Quang Đăng Trần");
+        caSiMap.put("Anh Đã Lừa Dối Em Rồi (FUKA REMIX)", "Quang Kiệt");
+        caSiMap.put("ANH VUI", "Phạm Kỳ");
+        caSiMap.put("BAD NIGHT", "TINH HÀ \"SAY HI\"; Dương Domic; Pháp Kiều; DANG HONG HAI; Ali Hoàng Dương");
+        caSiMap.put("Bình Yên", "Vũ. & Binz");
+        caSiMap.put("Buông Đôi Tay Nhau Ra", "Sơn Tùng (M-TP)");
+        caSiMap.put("chẳng phải tình đầu sao đau đến thế", "MIN, Dangrangto & antransax");
+        caSiMap.put("Chất Gây Hại", "Quang Hùng MasterD, Low G, Hino");
+        caSiMap.put("CHẠY NGAY ĐI", "Sơn Tùng M-TP");
+        caSiMap.put("CHỜ ANH VỀ", "ANH TRAI \"SAY HI\", B Ray, AMEE");
+        caSiMap.put("Chờ Tới Khi Anh Về", "HIEUTHUHAI, Hoàng Tôn");
+        caSiMap.put("Chúng Ta Không Thuộc Về Nhau", "Sơn Tùng M-TP");
+        caSiMap.put("Chuyện Đôi Ta", "Emcee L (Da LAB)");
+        caSiMap.put("CÔ ĐƠN ANH CŨNG VUI", "TINH HÀ \"SAY HI\"; WEAN; KIMLONG; Xuân Định K.Y; DILLAN");
+        caSiMap.put("DANCIN' MY WAY", "TINH HÀ \"SAY HI\"; buitruonglinh; Sơn.K; HYO; Song Luân");
+        caSiMap.put("Dạo Bước HongKong 1999", "NHONHO");
+        caSiMap.put("Dạo Gần Đây Anh Thấy Anh Không Bằng Ai Hết", "HIEUTHUHAI");
+        caSiMap.put("Dạo Này", "Obito");
+        caSiMap.put("Dạt Vào Tim Em", "Anh Trai Vượt Ngàn Chông Gai; CHARLES.; Thai VG; Cheng");
+        caSiMap.put("đôi mắt kẻ tình si", "GREY D, MIN");
+        caSiMap.put("Đớn Đau Vô Cùng", "DatKaa");
+        caSiMap.put("dự báo thời tiết hôm nay mưa", "GREY D");
+        caSiMap.put("Dù Cho Tận Thế", "Erik");
+        caSiMap.put("Đừng Làm Trái Tim Anh Đau", "Sơn Tùng M-TP");
+        caSiMap.put("E Là Không Thể", "Anh Quân Idol");
+        caSiMap.put("Em (feat. SOOBIN)", "Binz");
+        caSiMap.put("Em Thua Cô Ta (#1)", "THIÊN ĐÌNH");
+        caSiMap.put("Giờ Thì", "buitruonglinh");
+        caSiMap.put("HÀO QUANG", "RHYDER,Dương Domic,Pháp Kiều,ANH TRAI \"SAY HI\"");
+        caSiMap.put("Hãy Trao Cho Anh", "Sơn Tùng M-TP, Snoop Dogg");
+        caSiMap.put("hello em có khỏe không", "Dfoxie37, Myhoa, Tuann");
+        caSiMap.put("Hẹn Lần Sau", "MAYDAYs");
+        caSiMap.put("hoá ra…", "GREY D");
+        caSiMap.put("Hỏa Tâm", "Anh Trai Vượt Ngàn Chông Gai feat. 34 Anh Tài");
+        caSiMap.put("Hôn Lễ Của Em", "Trọng Nhân feat. Tiểu Mỹ");
+        caSiMap.put("IDNAT (IM ĐỢI NGƯỜI ANH THƯƠNG)", "TINH HÀ \"SAY HI\"; Wren Evans; IVAN; CAPTAIN BOY; Thể Thiên");
+        caSiMap.put("Kẻ Say Tình 2", "Quốc Thiên");
+        caSiMap.put("Kẻ Say Tình", "Quốc Thiên");
+        caSiMap.put("Kho Báu", "(S)TRONG");
+        caSiMap.put("Kho Báu (1)", "(S)TRONG, Rhymastic");
+        caSiMap.put("Khó Vẽ Nụ Cười", "Dat G,Du Uyen");
+        caSiMap.put("Khóa Ly Biệt", "The Masked Singer");
+        caSiMap.put("Không Buông", "Hngle,Ari (Việt Nam)");
+        caSiMap.put("KHÔNG ĐAU NỮA RỒI", "EM XINH \"SAY HI\", 52Hz, Orange, Châu Bùi, Mỹ Mỹ, Pháp Kiều");
+        caSiMap.put("Không Thể Say", "HIEUTHUHAI");
+        caSiMap.put("Không Thời Gian", "Dương Domic");
+
+        String[] theLoaiList = {"Pop", "Rock", "Ballad", "V-Pop", "R&B", "Rap", "Khác"};
+        String[] moTaList = {
+                "Bài hát tuyệt vời cho ngày mới",
+                "Giai điệu nhẹ nhàng sâu lắng",
+                "Nhạc quẩy cực sung",
+                "Nghe đi nghe lại không chán",
+                "Cảm xúc thăng hoa",
+                "Một bản hit đình đám",
+                "Giai điệu bắt tai"
+        };
+
+        try {
+            String[] fileNames = mContext.getAssets().list("datamusic");
+            if (fileNames != null) {
+                File thuMuc = new File(mContext.getFilesDir(), "music");
+                if (!thuMuc.exists()) {
+                    thuMuc.mkdirs();
+                }
+
+                Random random = new Random();
+                for (String fileName : fileNames) {
+                    if (fileName.endsWith(".mp3")) {
+                        File fileDich = new File(thuMuc, fileName);
+                        if (!fileDich.exists()) {
+                            try (InputStream luongDoc = mContext.getAssets().open("datamusic/" + fileName);
+                                 FileOutputStream luongGhi = new FileOutputStream(fileDich)) {
+                                byte[] boDem = new byte[16384];
+                                int soByteDa;
+                                while ((soByteDa = luongDoc.read(boDem)) != -1) {
+                                    luongGhi.write(boDem, 0, soByteDa);
+                                }
+                            }
+                        }
+
+                        String tenBaiHat = fileName.substring(0, fileName.lastIndexOf('.'));
+                        String caSi = caSiMap.containsKey(tenBaiHat) ? caSiMap.get(tenBaiHat) : "Đang cập nhật";
+                        String theLoai = theLoaiList[random.nextInt(theLoaiList.length)];
+                        String moTa = moTaList[random.nextInt(moTaList.length)];
+                        String hinhAnh = ""; // Mặc định
+                        String linkBaiHat = fileDich.getAbsolutePath();
+
+                        ContentValues giaTriMoi = new ContentValues();
+                        giaTriMoi.put(COT_TEN_BAI_HAT, tenBaiHat);
+                        giaTriMoi.put(COT_CA_SI, caSi);
+                        giaTriMoi.put(COT_THE_LOAI, theLoai);
+                        giaTriMoi.put(COT_MO_TA, moTa);
+                        giaTriMoi.put(COT_HINH_ANH, hinhAnh);
+                        giaTriMoi.put(COT_LINK_BAI_HAT, linkBaiHat);
+                        db.insert(BANG_BAI_HAT, null, giaTriMoi);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
