@@ -52,6 +52,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
     BaiHatAdapter baiHatAdapter;
     ArrayList<BaiHat> danhSachGoc;
     ArrayList<BaiHat> danhSachHienThi;
+    ArrayList<BaiHat> danhSachAudius;    // Chỉ lưu bài hát từ Audius API
     ArrayList<String> danhSachIdYeuThich;
 
     CSDLHelper csdlHelper;
@@ -84,6 +85,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
 
         danhSachGoc = new ArrayList<>();
         danhSachHienThi = new ArrayList<>();
+        danhSachAudius = new ArrayList<>();
         danhSachIdYeuThich = new ArrayList<>();
         
         baiHatAdapter = new BaiHatAdapter(this, R.layout.item_bai_hat, danhSachHienThi, danhSachIdYeuThich);
@@ -146,6 +148,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
 
     private void taiDanhSachGoc() {
         danhSachGoc.clear();
+        danhSachAudius.clear();
         // Lấy nhạc cục bộ
         danhSachGoc.addAll(csdlHelper.layTatCaBaiHat());
         locDanhSach();
@@ -179,6 +182,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
                                     
                                     BaiHat bh = new BaiHat(id, ten, caSi, theLoai, moTa, hinhAnh, linkNhac);
                                     danhSachGoc.add(bh);
+                                    danhSachAudius.add(bh); // Đánh dấu nguồn Audius
                                 }
                                 locDanhSach();
                             } else {
@@ -217,7 +221,9 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
         danhSachHienThi.clear();
         
         String tuKhoa = tuKhoaTimKiem != null ? tuKhoaTimKiem.trim().toLowerCase() : "";
+        boolean locTheoKhac = theLoaiHienTai.equals("Khác");
         
+        // Khi chọn "Khác" -> lấy cả nhạc local có thể loại "Khác" và toàn bộ nhạc Audius
         for (BaiHat baiHat : danhSachGoc) {
             boolean phuHopTuKhoa = false;
             if (tuKhoa.isEmpty()) {
@@ -235,6 +241,11 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
             boolean phuHopTheLoai = false;
             if (theLoaiHienTai.equals("Tất cả")) {
                 phuHopTheLoai = true;
+            } else if (locTheoKhac) {
+                // Nếu là nhạc từ Audius hoặc thể loại là "Khác"
+                if (danhSachAudius.contains(baiHat) || "Khác".equalsIgnoreCase(baiHat.getTheLoai())) {
+                    phuHopTheLoai = true;
+                }
             } else {
                 String theLoaiBaiHat = baiHat.getTheLoai();
                 if (theLoaiBaiHat != null && theLoaiBaiHat.equalsIgnoreCase(theLoaiHienTai)) {
@@ -250,6 +261,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
         baiHatAdapter.notifyDataSetChanged();
         
         if (danhSachHienThi.isEmpty()) {
+            tvTrong.setText("Không có bài hát nào");
             tvTrong.setVisibility(View.VISIBLE);
             rvDanhSachBaiHat.setVisibility(View.GONE);
         } else {
@@ -272,6 +284,8 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
                 csdlHelper.xoaYeuThich(idNguoiDung, baiHat.getId());
                 Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
             } else {
+                // Đảm bảo bài hát (có thể từ Audius) tồn tại trong DB trước khi lưu yêu thích
+                csdlHelper.damBaoBaiHatTonTai(baiHat);
                 csdlHelper.themYeuThich(idNguoiDung, baiHat.getId());
                 Toast.makeText(this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
             }

@@ -190,6 +190,8 @@ public class PhatNhacActivity extends AppCompatActivity {
             csdlHelper.xoaYeuThich(idNguoiDung, baiHatHienTai.getId());
             Toast.makeText(this, "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
         } else {
+            // Đảm bảo bài hát (có thể từ Audius) tồn tại trong DB trước khi lưu yêu thích
+            csdlHelper.damBaoBaiHatTonTai(baiHatHienTai);
             csdlHelper.themYeuThich(idNguoiDung, baiHatHienTai.getId());
             Toast.makeText(this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
         }

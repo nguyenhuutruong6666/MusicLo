@@ -304,6 +304,25 @@ public class CSDLHelper extends SQLiteOpenHelper {
     }
 
     // BÀI HÁT
+    
+    //Đảm bảo bài hát tồn tại trong DB. Dùng khi yêu thích bài từ Audius.
+    //Nếu id đã có → giữ nguyên (INSERT OR IGNORE). Nếu chưa có → thêm mới.
+    public void damBaoBaiHatTonTai(com.example.musiclo.models.BaiHat baiHat) {
+        if (baiHat == null || baiHat.getId() == null) return;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues giaTriMoi = new ContentValues();
+        giaTriMoi.put(COT_ID_BH, baiHat.getId());
+        giaTriMoi.put(COT_TEN_BAI_HAT, baiHat.getTenBaiHat() != null ? baiHat.getTenBaiHat() : "");
+        giaTriMoi.put(COT_CA_SI, baiHat.getCaSi() != null ? baiHat.getCaSi() : "");
+        giaTriMoi.put(COT_THE_LOAI, baiHat.getTheLoai() != null ? baiHat.getTheLoai() : "Khác");
+        giaTriMoi.put(COT_MO_TA, baiHat.getMoTa() != null ? baiHat.getMoTa() : "");
+        giaTriMoi.put(COT_HINH_ANH, baiHat.getHinhAnh() != null ? baiHat.getHinhAnh() : "");
+        giaTriMoi.put(COT_LINK_BAI_HAT, baiHat.getLinkBaiHat() != null ? baiHat.getLinkBaiHat() : "");
+        // INSERT OR IGNORE: không ghi đè nếu đã tồn tại
+        db.insertWithOnConflict(BANG_BAI_HAT, null, giaTriMoi, SQLiteDatabase.CONFLICT_IGNORE);
+        db.close();
+    }
+
     public String themBaiHat(String tenBaiHat, String caSi, String theLoai,
                            String moTa, String hinhAnh, String linkBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
