@@ -22,6 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.AdapterView;
+import com.example.musiclo.utils.MusicPlayerManager;
 
 public class DanhSachYeuThichActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -60,16 +61,10 @@ public class DanhSachYeuThichActivity extends AppCompatActivity implements View.
         rvDanhSachYeuThich.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MusicPlayerManager.getInstance().setPlaylist(danhSachYeuThich);
+                
                 Intent intent = new Intent(DanhSachYeuThichActivity.this, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : danhSachYeuThich) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
                 intent.putExtra("viTriHienTai", position);
-                
                 startActivity(intent);
             }
         });

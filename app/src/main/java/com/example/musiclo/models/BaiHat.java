@@ -1,7 +1,9 @@
 package com.example.musiclo.models;
 
-public class BaiHat {
-    private int id;
+import java.io.Serializable;
+
+public class BaiHat implements Serializable {
+    private String id;
     private String tenBaiHat;
     private String caSi;
     private String theLoai;
@@ -11,7 +13,7 @@ public class BaiHat {
 
     public BaiHat() {}
 
-    public BaiHat(int id, String tenBaiHat, String caSi, String theLoai,
+    public BaiHat(String id, String tenBaiHat, String caSi, String theLoai,
                   String moTa, String hinhAnh, String linkBaiHat) {
         this.id = id;
         this.tenBaiHat = tenBaiHat;
@@ -22,8 +24,8 @@ public class BaiHat {
         this.linkBaiHat = linkBaiHat;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getTenBaiHat() { return tenBaiHat; }
     public void setTenBaiHat(String tenBaiHat) { this.tenBaiHat = tenBaiHat; }

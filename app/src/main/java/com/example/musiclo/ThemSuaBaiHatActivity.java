@@ -45,7 +45,7 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
     Uri uriAnh = null;
     Uri uriNhac = null;
 
-    int idBaiHat = -1;
+    String idBaiHat = null;
     BaiHat baiHatHienTai = null;
 
     CSDLHelper csdlHelper;
@@ -106,8 +106,8 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
         btnLuuBaiHat = findViewById(R.id.btnLuu);
         progressBar = findViewById(R.id.thanhTienTrinh);
 
-        idBaiHat = getIntent().getIntExtra("idBaiHat", -1);
-        if (idBaiHat != -1) {
+        idBaiHat = getIntent().getStringExtra("idBaiHat");
+        if (idBaiHat != null) {
             taiDuLieuBaiHat(idBaiHat);
         }
 
@@ -117,7 +117,7 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
         btnLuuBaiHat.setOnClickListener(v -> xuLyLuu());
     }
 
-    private void taiDuLieuBaiHat(int id) {
+    private void taiDuLieuBaiHat(String id) {
         baiHatHienTai = csdlHelper.layBaiHatTheoId(id);
         if (baiHatHienTai != null) {
             edtTenBaiHat.setText(baiHatHienTai.getTenBaiHat() != null ? baiHatHienTai.getTenBaiHat() : "");
@@ -171,7 +171,7 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
             return;
         }
 
-        if (idBaiHat == -1 && uriNhac == null) {
+        if (idBaiHat == null && uriNhac == null) {
             Toast.makeText(this, "Vui lòng chọn file nhạc", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -208,9 +208,9 @@ public class ThemSuaBaiHatActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 boolean thanhCong;
-                if (idBaiHat == -1) {
-                    long kq = csdlHelper.themBaiHat(tenBaiHat, caSi, theLoai, moTa, finalAnh, finalNhac);
-                    thanhCong = kq != -1;
+                if (idBaiHat == null) {
+                    String kq = csdlHelper.themBaiHat(tenBaiHat, caSi, theLoai, moTa, finalAnh, finalNhac);
+                    thanhCong = kq != null;
                 } else {
                     thanhCong = csdlHelper.capNhatBaiHat(idBaiHat, tenBaiHat, caSi, theLoai, moTa, finalAnh, finalNhac);
                 }

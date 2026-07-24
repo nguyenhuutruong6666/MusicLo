@@ -19,7 +19,7 @@ import java.util.Random;
 public class CSDLHelper extends SQLiteOpenHelper {
 
     private static final String TEN_CSDL = "musiclo.db";
-    private static final int PHIEN_BAN = 5;
+    private static final int PHIEN_BAN = 6;
 
     // Tên bảng
     private static final String BANG_NGUOI_DUNG = "users";
@@ -74,7 +74,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
 
         // Tạo bảng bài hát
         db.execSQL("CREATE TABLE " + BANG_BAI_HAT + " (" +
-                COT_ID_BH + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COT_ID_BH + " TEXT PRIMARY KEY, " +
                 COT_TEN_BAI_HAT + " TEXT NOT NULL, " +
                 COT_CA_SI + " TEXT, " +
                 COT_THE_LOAI + " TEXT, " +
@@ -86,7 +86,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BANG_YEU_THICH + " (" +
                 COT_ID_YT + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COT_ID_ND_YT + " INTEGER NOT NULL, " +
-                COT_ID_BH_YT + " INTEGER NOT NULL, " +
+                COT_ID_BH_YT + " TEXT NOT NULL, " +
                 "UNIQUE(" + COT_ID_ND_YT + ", " + COT_ID_BH_YT + "))");
 
         // Thêm tài khoản admin mặc định
@@ -194,7 +194,10 @@ public class CSDLHelper extends SQLiteOpenHelper {
                         String hinhAnh = ""; // Mặc định
                         String linkBaiHat = fileDich.getAbsolutePath();
 
+                        String idBaiHat = java.util.UUID.randomUUID().toString();
+
                         ContentValues giaTriMoi = new ContentValues();
+                        giaTriMoi.put(COT_ID_BH, idBaiHat);
                         giaTriMoi.put(COT_TEN_BAI_HAT, tenBaiHat);
                         giaTriMoi.put(COT_CA_SI, caSi);
                         giaTriMoi.put(COT_THE_LOAI, theLoai);
@@ -301,10 +304,12 @@ public class CSDLHelper extends SQLiteOpenHelper {
     }
 
     // BÀI HÁT
-    public long themBaiHat(String tenBaiHat, String caSi, String theLoai,
+    public String themBaiHat(String tenBaiHat, String caSi, String theLoai,
                            String moTa, String hinhAnh, String linkBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues giaTriMoi = new ContentValues();
+        String idBaiHat = java.util.UUID.randomUUID().toString();
+        giaTriMoi.put(COT_ID_BH, idBaiHat);
         giaTriMoi.put(COT_TEN_BAI_HAT, tenBaiHat);
         giaTriMoi.put(COT_CA_SI, caSi);
         giaTriMoi.put(COT_THE_LOAI, theLoai);
@@ -313,10 +318,10 @@ public class CSDLHelper extends SQLiteOpenHelper {
         giaTriMoi.put(COT_LINK_BAI_HAT, linkBaiHat);
         long ketQua = db.insert(BANG_BAI_HAT, null, giaTriMoi);
         db.close();
-        return ketQua;
+        return ketQua != -1 ? idBaiHat : null;
     }
 
-    public boolean capNhatBaiHat(int idBaiHat, String tenBaiHat, String caSi, String theLoai,
+    public boolean capNhatBaiHat(String idBaiHat, String tenBaiHat, String caSi, String theLoai,
                                   String moTa, String hinhAnh, String linkBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues giaTriMoi = new ContentValues();
@@ -327,15 +332,15 @@ public class CSDLHelper extends SQLiteOpenHelper {
         giaTriMoi.put(COT_HINH_ANH, hinhAnh);
         giaTriMoi.put(COT_LINK_BAI_HAT, linkBaiHat);
         int soHang = db.update(BANG_BAI_HAT, giaTriMoi,
-                COT_ID_BH + "=?", new String[]{String.valueOf(idBaiHat)});
+                COT_ID_BH + "=?", new String[]{idBaiHat});
         db.close();
         return soHang > 0;
     }
 
-    public boolean xoaBaiHat(int idBaiHat) {
+    public boolean xoaBaiHat(String idBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(BANG_YEU_THICH, COT_ID_BH_YT + "=?", new String[]{String.valueOf(idBaiHat)});
-        int soHang = db.delete(BANG_BAI_HAT, COT_ID_BH + "=?", new String[]{String.valueOf(idBaiHat)});
+        db.delete(BANG_YEU_THICH, COT_ID_BH_YT + "=?", new String[]{idBaiHat});
+        int soHang = db.delete(BANG_BAI_HAT, COT_ID_BH + "=?", new String[]{idBaiHat});
         db.close();
         return soHang > 0;
     }
@@ -352,10 +357,10 @@ public class CSDLHelper extends SQLiteOpenHelper {
         return danhSach;
     }
 
-    public BaiHat layBaiHatTheoId(int idBaiHat) {
+    public BaiHat layBaiHatTheoId(String idBaiHat) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(BANG_BAI_HAT, null,
-                COT_ID_BH + "=?", new String[]{String.valueOf(idBaiHat)},
+                COT_ID_BH + "=?", new String[]{idBaiHat},
                 null, null, null);
         BaiHat baiHat = null;
         if (cursor.moveToFirst()) {
@@ -367,7 +372,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
     }
 
     private BaiHat cursorSangBaiHat(Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndexOrThrow(COT_ID_BH));
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(COT_ID_BH));
         String tenBaiHat = cursor.getString(cursor.getColumnIndexOrThrow(COT_TEN_BAI_HAT));
         String caSi = cursor.getString(cursor.getColumnIndexOrThrow(COT_CA_SI));
         String theLoai = cursor.getString(cursor.getColumnIndexOrThrow(COT_THE_LOAI));
@@ -378,7 +383,7 @@ public class CSDLHelper extends SQLiteOpenHelper {
     }
 
     //YÊU THÍCH
-    public boolean themYeuThich(int idNguoiDung, int idBaiHat) {
+    public boolean themYeuThich(int idNguoiDung, String idBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues giaTriMoi = new ContentValues();
         giaTriMoi.put(COT_ID_ND_YT, idNguoiDung);
@@ -388,20 +393,20 @@ public class CSDLHelper extends SQLiteOpenHelper {
         return ketQua != -1;
     }
 
-    public boolean xoaYeuThich(int idNguoiDung, int idBaiHat) {
+    public boolean xoaYeuThich(int idNguoiDung, String idBaiHat) {
         SQLiteDatabase db = getWritableDatabase();
         int soHang = db.delete(BANG_YEU_THICH,
                 COT_ID_ND_YT + "=? AND " + COT_ID_BH_YT + "=?",
-                new String[]{String.valueOf(idNguoiDung), String.valueOf(idBaiHat)});
+                new String[]{String.valueOf(idNguoiDung), idBaiHat});
         db.close();
         return soHang > 0;
     }
 
-    public boolean laYeuThich(int idNguoiDung, int idBaiHat) {
+    public boolean laYeuThich(int idNguoiDung, String idBaiHat) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(BANG_YEU_THICH, new String[]{COT_ID_YT},
                 COT_ID_ND_YT + "=? AND " + COT_ID_BH_YT + "=?",
-                new String[]{String.valueOf(idNguoiDung), String.valueOf(idBaiHat)},
+                new String[]{String.valueOf(idNguoiDung), idBaiHat},
                 null, null, null);
         boolean tonTai = cursor.getCount() > 0;
         cursor.close();
@@ -424,14 +429,14 @@ public class CSDLHelper extends SQLiteOpenHelper {
         return danhSach;
     }
 
-    public List<Integer> layIdYeuThich(int idNguoiDung) {
-        List<Integer> danhSachId = new ArrayList<>();
+    public List<String> layIdYeuThich(int idNguoiDung) {
+        List<String> danhSachId = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(BANG_YEU_THICH, new String[]{COT_ID_BH_YT},
                 COT_ID_ND_YT + "=?", new String[]{String.valueOf(idNguoiDung)},
                 null, null, null);
         while (cursor.moveToNext()) {
-            danhSachId.add(cursor.getInt(0));
+            danhSachId.add(cursor.getString(0));
         }
         cursor.close();
         db.close();

@@ -26,9 +26,9 @@ public class BaiHatAdapter extends ArrayAdapter<BaiHat> {
     Activity context;
     int resource;
     ArrayList<BaiHat> listBaiHat;
-    ArrayList<Integer> danhSachIdYeuThich;
+    ArrayList<String> danhSachIdYeuThich;
 
-    public BaiHatAdapter(Activity context, int resource, ArrayList<BaiHat> listBaiHat, ArrayList<Integer> danhSachIdYeuThich) {
+    public BaiHatAdapter(Activity context, int resource, ArrayList<BaiHat> listBaiHat, ArrayList<String> danhSachIdYeuThich) {
         super(context, resource, listBaiHat);
         this.context = context;
         this.resource = resource;

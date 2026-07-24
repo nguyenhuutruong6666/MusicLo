@@ -27,6 +27,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
+import android.widget.ProgressBar;
+
+import com.example.musiclo.api.AudiusApiClient;
+import com.example.musiclo.api.AudiusApiService;
+import com.example.musiclo.api.AudiusResponse;
+import com.example.musiclo.api.AudiusTrack;
+import com.example.musiclo.api.AudiusTrackResponse;
+import com.example.musiclo.utils.MusicPlayerManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DanhSachBaiHatActivity extends AppCompatActivity implements View.OnClickListener {
 
     ListView rvDanhSachBaiHat;
@@ -34,11 +47,12 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
     Spinner spinnerTheLoai;
     TextView tvTrong;
     BottomNavigationView bottomNav;
+    ProgressBar progressBar;
 
     BaiHatAdapter baiHatAdapter;
     ArrayList<BaiHat> danhSachGoc;
     ArrayList<BaiHat> danhSachHienThi;
-    ArrayList<Integer> danhSachIdYeuThich;
+    ArrayList<String> danhSachIdYeuThich;
 
     CSDLHelper csdlHelper;
     QuanLyPhienDangNhap quanLyPhienDangNhap;
@@ -66,6 +80,7 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
         spinnerTheLoai = findViewById(R.id.spinnerTheLoai);
         tvTrong = findViewById(R.id.tvTrong);
         bottomNav = findViewById(R.id.thanhDieuHuongDuoi);
+        progressBar = findViewById(R.id.progressBar);
 
         danhSachGoc = new ArrayList<>();
         danhSachHienThi = new ArrayList<>();
@@ -77,16 +92,10 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
         rvDanhSachBaiHat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MusicPlayerManager.getInstance().setPlaylist(danhSachHienThi);
+                
                 Intent intent = new Intent(DanhSachBaiHatActivity.this, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : danhSachHienThi) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
                 intent.putExtra("viTriHienTai", position);
-                
                 startActivity(intent);
             }
         });
@@ -137,18 +146,69 @@ public class DanhSachBaiHatActivity extends AppCompatActivity implements View.On
 
     private void taiDanhSachGoc() {
         danhSachGoc.clear();
+        // Lấy nhạc cục bộ
         danhSachGoc.addAll(csdlHelper.layTatCaBaiHat());
         locDanhSach();
+        
+        // Lấy nhạc từ Audius API
+        taiNhacTuAudius();
+    }
+
+    private void taiNhacTuAudius() {
+        progressBar.setVisibility(View.VISIBLE);
+        AudiusApiService initialService = AudiusApiClient.getClient("https://api.audius.co/");
+        initialService.getHosts("https://api.audius.co/").enqueue(new Callback<AudiusResponse>() {
+            @Override
+            public void onResponse(Call<AudiusResponse> call, Response<AudiusResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getHosts() != null && !response.body().getHosts().isEmpty()) {
+                    String host = response.body().getHosts().get(0);
+                    AudiusApiService audiusService = AudiusApiClient.getClient(host);
+                    audiusService.getTrendingTracks("MusicLo").enqueue(new Callback<AudiusTrackResponse>() {
+                        @Override
+                        public void onResponse(Call<AudiusTrackResponse> call, Response<AudiusTrackResponse> response) {
+                            progressBar.setVisibility(View.GONE);
+                            if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                                for (AudiusTrack track : response.body().getData()) {
+                                    String id = track.getId();
+                                    String ten = track.getTitle();
+                                    String caSi = track.getUser() != null ? track.getUser().getName() : "Unknown";
+                                    String theLoai = track.getGenre() != null ? track.getGenre() : "Khác";
+                                    String moTa = track.getDescription();
+                                    String hinhAnh = (track.getArtwork() != null && track.getArtwork().getImage480() != null) ? track.getArtwork().getImage480() : "";
+                                    String linkNhac = host + "/v1/tracks/" + id + "/stream?app_name=MusicLo";
+                                    
+                                    BaiHat bh = new BaiHat(id, ten, caSi, theLoai, moTa, hinhAnh, linkNhac);
+                                    danhSachGoc.add(bh);
+                                }
+                                locDanhSach();
+                            } else {
+                                Toast.makeText(DanhSachBaiHatActivity.this, "Lỗi API getTrending: " + response.code(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<AudiusTrackResponse> call, Throwable t) {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(DanhSachBaiHatActivity.this, "Lỗi tải nhạc: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(DanhSachBaiHatActivity.this, "Lỗi API getHosts: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<AudiusResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(DanhSachBaiHatActivity.this, "Lỗi getHosts: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void taiDanhSachYeuThich() {
         int idNguoiDung = quanLyPhienDangNhap.layIdNguoiDung();
         if (idNguoiDung != -1) {
             danhSachIdYeuThich.clear();
-            ArrayList<BaiHat> yeuThich = (ArrayList<BaiHat>) csdlHelper.layDanhSachYeuThich(idNguoiDung);
-            for (BaiHat bh : yeuThich) {
-                danhSachIdYeuThich.add(bh.getId());
-            }
+            danhSachIdYeuThich.addAll(csdlHelper.layIdYeuThich(idNguoiDung));
             baiHatAdapter.notifyDataSetChanged();
         }
     }

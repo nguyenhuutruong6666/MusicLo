@@ -25,6 +25,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.view.View;
 import android.widget.AdapterView;
+import com.example.musiclo.utils.MusicPlayerManager;
 
 public class QuanLyBaiHatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,16 +64,10 @@ public class QuanLyBaiHatActivity extends AppCompatActivity implements View.OnCl
         rvDanhSachBaiHat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MusicPlayerManager.getInstance().setPlaylist(danhSachBaiHat);
+                
                 Intent intent = new Intent(QuanLyBaiHatActivity.this, PhatNhacActivity.class);
-                
-                ArrayList<Integer> danhSachId = new ArrayList<>();
-                for (BaiHat bh : danhSachBaiHat) {
-                    danhSachId.add(bh.getId());
-                }
-                
-                intent.putIntegerArrayListExtra("danhSachId", danhSachId);
                 intent.putExtra("viTriHienTai", position);
-                
                 startActivity(intent);
             }
         });

@@ -20,11 +20,13 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.musiclo.models.BaiHat;
 import com.example.musiclo.utils.CSDLHelper;
+import com.example.musiclo.utils.MusicPlayerManager;
 import com.example.musiclo.utils.QuanLyPhienDangNhap;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class PhatNhacActivity extends AppCompatActivity {
@@ -41,7 +43,7 @@ public class PhatNhacActivity extends AppCompatActivity {
     boolean daYeuThich = false;
 
     // Danh sách phát
-    ArrayList<Integer> danhSachIdBaiHat;
+    List<BaiHat> danhSachBaiHat;
     int viTriHienTai = -1;
 
     // Dữ liệu bài hát hiện tại
@@ -80,13 +82,13 @@ public class PhatNhacActivity extends AppCompatActivity {
         btnBaiTiep = findViewById(R.id.btnBaiTiep);
         seekBar = findViewById(R.id.seekBar);
 
-        // Nhận dữ liệu danh sách phát từ Intent
+        // Nhận dữ liệu danh sách phát từ MusicPlayerManager
         Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            danhSachIdBaiHat = intent.getIntegerArrayListExtra("danhSachId");
+        if (intent != null) {
+            danhSachBaiHat = MusicPlayerManager.getInstance().getPlaylist();
             viTriHienTai = intent.getIntExtra("viTriHienTai", -1);
 
-            if (danhSachIdBaiHat != null && !danhSachIdBaiHat.isEmpty() && viTriHienTai >= 0) {
+            if (danhSachBaiHat != null && !danhSachBaiHat.isEmpty() && viTriHienTai >= 0) {
                 taiBaiHatHienTai();
             } else {
                 Toast.makeText(this, "Không tìm thấy dữ liệu bài hát", Toast.LENGTH_SHORT).show();
@@ -116,15 +118,12 @@ public class PhatNhacActivity extends AppCompatActivity {
     }
 
     private void taiBaiHatHienTai() {
-        if (danhSachIdBaiHat == null || danhSachIdBaiHat.isEmpty() || viTriHienTai < 0 || viTriHienTai >= danhSachIdBaiHat.size()) {
+        if (danhSachBaiHat == null || danhSachBaiHat.isEmpty() || viTriHienTai < 0 || viTriHienTai >= danhSachBaiHat.size()) {
             return;
         }
 
-        // Lấy ID bài hát hiện tại từ danh sách
-        int idBaiHat = danhSachIdBaiHat.get(viTriHienTai);
-        
-        // Truy vấn dữ liệu bài hát từ DB
-        baiHatHienTai = csdlHelper.layBaiHatTheoId(idBaiHat);
+        // Lấy bài hát hiện tại từ danh sách
+        baiHatHienTai = danhSachBaiHat.get(viTriHienTai);
         if (baiHatHienTai == null) {
             Toast.makeText(this, "Bài hát không tồn tại", Toast.LENGTH_SHORT).show();
             return;
@@ -156,19 +155,19 @@ public class PhatNhacActivity extends AppCompatActivity {
     }
 
     private void chuyenBaiTiepTheo() {
-        if (danhSachIdBaiHat == null || danhSachIdBaiHat.isEmpty()) return;
+        if (danhSachBaiHat == null || danhSachBaiHat.isEmpty()) return;
         viTriHienTai++;
-        if (viTriHienTai >= danhSachIdBaiHat.size()) {
+        if (viTriHienTai >= danhSachBaiHat.size()) {
             viTriHienTai = 0; // Quay lại bài đầu tiên nếu đang ở cuối
         }
         taiBaiHatHienTai();
     }
 
     private void chuyenBaiTruocDo() {
-        if (danhSachIdBaiHat == null || danhSachIdBaiHat.isEmpty()) return;
+        if (danhSachBaiHat == null || danhSachBaiHat.isEmpty()) return;
         viTriHienTai--;
         if (viTriHienTai < 0) {
-            viTriHienTai = danhSachIdBaiHat.size() - 1; // Nhảy tới bài cuối nếu đang ở đầu
+            viTriHienTai = danhSachBaiHat.size() - 1; // Nhảy tới bài cuối nếu đang ở đầu
         }
         taiBaiHatHienTai();
     }
@@ -214,7 +213,13 @@ public class PhatNhacActivity extends AppCompatActivity {
 
         try {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(duongDanNhac);
+            if (duongDanNhac.startsWith("http")) {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", "Bearer tcefZoCfV47JRK8A5XSGZFRPI8yZ01Dj8LTFIAlatQA=");
+                mediaPlayer.setDataSource(this, android.net.Uri.parse(duongDanNhac), headers);
+            } else {
+                mediaPlayer.setDataSource(duongDanNhac);
+            }
             mediaPlayer.prepareAsync();
             mediaPlayer.setOnPreparedListener(mp -> {
                 tvTongThoiGian.setText(dinhDangThoiGian(mp.getDuration()));
@@ -225,7 +230,7 @@ public class PhatNhacActivity extends AppCompatActivity {
                 // Tự động chuyển bài khi kết thúc
                 chuyenBaiTiepTheo();
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             Toast.makeText(this, "Lỗi phát nhạc", Toast.LENGTH_SHORT).show();
         }
     }
